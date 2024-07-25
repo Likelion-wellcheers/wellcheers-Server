@@ -54,6 +54,9 @@ DJANGO_APPS = [
 ]
 
 PROJECT_APPS = [
+    "account",
+    "house",
+    "post",
 
 ]
 
