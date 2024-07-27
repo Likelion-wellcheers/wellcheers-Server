@@ -54,7 +54,7 @@ DJANGO_APPS = [
 ]
 
 PROJECT_APPS = [
-    'account',
+    'accounts',
 ]
 
 THIRD_PARTY_APPS = [
@@ -66,7 +66,7 @@ THIRD_PARTY_APPS = [
 
 INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
 
-AUTH_USER_MODEL = 'account.User'
+AUTH_USER_MODEL = 'accounts.User'
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',
