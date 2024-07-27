@@ -15,35 +15,29 @@ import boto3
 from .models import Region
 from .serializers import RegionSerializer
 
-class RegionByInfraView(APIView):
-    def post(self, request, *args, **kwargs):
-        infra_ids = request.data.get('infra_ids', []) #인프라 아이디로 입력을 받아옴.
-        if not infra_ids:
-            return Response({"error": "No infra_ids provided"}, status=status.HTTP_400_BAD_REQUEST) #인프라 입력이 안되면 오류 리턴
+class Recommend(APIView):
+    def get(self, request):
+        infra        = request.GET.get('category', None)
+        sub_category    = request.GET.get('subcategory', None)
+        detail_category = request.GET.get('detailcategory', None)
+        color           = request.GET.getlist('color', None)
+        size            = request.GET.getlist('size', None)
+        
+        if category:
+            products = Product.objects.filter(detail_category__sub_category__category=category)
 
-        regions = Region.objects.all()
-        infra_count = len(infra_ids)
+        if sub_category:
+            products = products.filter(detail_category__sub_category=sub_category)
 
-        # Filter regions that contain the maximum number of specified infra
-        filtered_regions = []
-        for region in regions:
-            infra_set = set(region.infra_id.values_list('id', flat=True))
-            common_infra = infra_set.intersection(infra_ids)
-            if common_infra:
-                filtered_regions.append((region, len(common_infra)))
+        if detail_category:
+            products = products.filter(detail_category=detail_category)
 
-        # Sort regions by the number of matching infra in descending order
-        filtered_regions.sort(key=lambda x: x[1], reverse=True)
+        if color:
+            products = products.filter(productoption__color__in=color).distinct()
 
-        if filtered_regions:
-            max_infra_count = filtered_regions[0][1]
-            max_regions = [region for region, count in filtered_regions if count == max_infra_count]
-        else:
-            max_regions = []
-
-        region_serializer = RegionSerializer(max_regions, many=True)
-        return Response(region_serializer.data, status=status.HTTP_200_OK)
+        if size:
+            products = products.filter(productoption__size__in=size).distinct()
     
 
-    
+
 # Create your views here.
