@@ -180,6 +180,5 @@ class KakaoCallbackView(APIView): # 카카오 Callback
             'social_id': social_id,
             'user_email': user_email,
         }
-        response = Response(status=status.HTTP_200_OK)
-        response.data = res
-        return res
+        response = Response(data=res, status=status.HTTP_200_OK)
+        return response
