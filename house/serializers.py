@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.conf import settings
-from .models import Infra, Mood, House_type, Region 
+from .models import Infra, Hobby, Lifestyle, Region ,Center, CenterReview
 
 class InfraSerializer(serializers.ModelSerializer):
     class Meta:
@@ -9,12 +9,12 @@ class InfraSerializer(serializers.ModelSerializer):
 
 class MoodSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Mood
+        model = Hobby
         fields = ['id', 'name']
 
 class HouseTypeSerializer(serializers.ModelSerializer):
     class Meta:
-        model = House_type
+        model = Lifestyle
         fields = ['id', 'name']
 
 class RegionSerializer(serializers.ModelSerializer):
@@ -22,13 +22,18 @@ class RegionSerializer(serializers.ModelSerializer):
         model=Region
         fields= "__all__"
 
+class CenterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=Center
+        fields="__all__"
+
 class FilterSerializer(serializers.Serializer):
     infra = serializers.ListField(
         child=serializers.IntegerField(), required=False
     )
-    mood = serializers.ListField(
+    hobby = serializers.ListField(
         child=serializers.IntegerField(), required=False
     )
-    housetype = serializers.ListField(
+    lifestyle = serializers.ListField(
         child=serializers.IntegerField(), required=False
     )
