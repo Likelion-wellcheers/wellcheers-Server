@@ -67,3 +67,10 @@ class Recommend(APIView):
     #         region_serializer = RegionSerializer(regions, many=True)
     #         return Response(region_serializer.data, status=status.HTTP_200_OK)
     #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class RegionInformation(APIView):
+     def get(self, request, id):
+        region= get_object_or_404(Region, id=id)
+        serializer=RegionSerializer(region)
+        return Response(serializer.data)
+
