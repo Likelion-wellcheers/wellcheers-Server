@@ -19,7 +19,6 @@ class Request (BaseModel): #요청하기글 모델입니다
 
 class Article(BaseModel): #카드뉴스, 매거진, 정책관련 모델입니다. (이미지가 필수, 텍스트는 blank 가능.)
     id=models.AutoField(primary_key=True)
-    # user_id=models.ForeignKey(User, verbose_name="작성자", max_length=20)
     region_id = models.ForeignKey(Region, verbose_name="지역", on_delete=models.CASCADE)
     image=models.ImageField(verbose_name="이미지")
     content=models.TextField(verbose_name="내용",  blank=True)
