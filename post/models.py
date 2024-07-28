@@ -22,6 +22,12 @@ class Article(BaseModel): #카드뉴스, 매거진, 정책관련 모델입니다
     region_id = models.ForeignKey(Region, verbose_name="지역", on_delete=models.CASCADE)
     image=models.ImageField(verbose_name="이미지")
     content=models.TextField(verbose_name="내용",  blank=True)
+    
+class Magazine(BaseModel): #카드뉴스, 매거진, 정책관련 모델입니다. (이미지가 필수, 텍스트는 blank 가능.)
+    id=models.AutoField(primary_key=True)
+    region_id = models.ForeignKey(Region, verbose_name="지역", on_delete=models.CASCADE)
+    image=models.ImageField(verbose_name="이미지")
+    content=models.TextField(verbose_name="내용",  blank=True)
 
 class Review(BaseModel): # 동네후기 모델입니다. 텍스트 비워둘 수 없음. 이미지 안올릴 수 있음.
     id=models.AutoField(primary_key=True)

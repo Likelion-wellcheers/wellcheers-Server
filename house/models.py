@@ -36,6 +36,8 @@ class Region (BaseModel):
     city= models.CharField(verbose_name="시",max_length=20)
     gu= models.CharField(verbose_name="구",max_length=20, blank=True)
     goon= models.CharField(verbose_name="군",max_length=20, blank=True) #모델을 수정해서 null True 로 안해두면 migrations 기 안됨...
+    thumbnail = models.ImageField(null=True, blank=True, verbose_name="썸네일")
+
 
     def __str__(self):
         return f"{self.id} - {self.city}-{self.gu}"
@@ -47,9 +49,23 @@ class Center (BaseModel):
     address=models.TextField(verbose_name="상세주소")
     time=models.CharField(verbose_name="운영시간정보",blank=True, max_length=150)
     cost=models.IntegerField(verbose_name="이용비용")
+    thumbnail = models.ImageField(null=True, blank=True, verbose_name="썸네일") #필로우 깔아줘서 이미지필드 사용가능
+
 
     def __str__(self):
         return f"{self.id} - {self.name}"
+    
+class Cart (BaseModel):
+    id=models.AutoField(primary_key=True)
+    center1=models.ForeignKey(Center,related_name='cart_center1', on_delete=models.CASCADE)
+    center2=models.ForeignKey(Center,related_name='cart_center2', on_delete=models.CASCADE)
+    center3=models.ForeignKey(Center,related_name='cart_center3', on_delete=models.CASCADE)
+
+    def total_cost(self):
+        return 4*(self.center1.cost + self.center2.cost + self.center3.cost) #이용비용 계산 (한달 기준으로 계산해줌.)
+
+    def __str__(self):
+        return f"Cart with facilities: {self.center1}, {self.center2}, {self.center3}"
 
 class CenterReview(BaseModel):
     id=models.AutoField(primary_key=True)

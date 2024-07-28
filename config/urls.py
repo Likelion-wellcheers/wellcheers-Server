@@ -17,8 +17,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from house.views import *
+from post.views import *
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("recommend/", include('house.urls'))
+    path("recommend/", include('house.urls')),
+    path("issue/", include("post.urls")),
 ]

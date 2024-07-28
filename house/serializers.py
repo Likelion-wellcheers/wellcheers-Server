@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.conf import settings
-from .models import Infra, Hobby, Lifestyle, Region ,Center, CenterReview
+from .models import Infra, Hobby, Lifestyle, Region ,Center, CenterReview, Cart
 
 class InfraSerializer(serializers.ModelSerializer):
     class Meta:
@@ -26,6 +26,21 @@ class CenterSerializer(serializers.ModelSerializer):
     class Meta:
         model=Center
         fields="__all__"
+
+class CartSerializer(serializers.ModelSerializer):
+    center1 = CenterSerializer()
+    center2 = CenterSerializer()
+    center3 = CenterSerializer()
+
+    class Meta:
+        model = Cart
+        fields = ['id', 'center1', 'center2', 'center3', 'total_cost']
+
+class CartcostSerializer(serializers.ModelSerializer):
+    total_cost = serializers.DecimalField(max_digits=10, decimal_places=2) #소숫점 포함 10자리
+    class Meta:
+        model=Cart
+        fields= ['total_cost']
 
 class FilterSerializer(serializers.Serializer):
     infra = serializers.ListField(

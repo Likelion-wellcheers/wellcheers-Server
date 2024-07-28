@@ -11,13 +11,70 @@ from rest_framework import status
 from django.http import Http404
 
 from .models import Article
-from .serializers import Articleserializer
+from .serializers import ArticleSerializer,MagazineSerializer
+from house.models import Region
+from house.serializers import RegionSerializer
 
 class AtriclePost(APIView):
         def get(self, request, format=None):
             articles=Article.objects.all()
-            serializers=Articleserializer(articles, many=True)
+            serializers=ArticleSerializer(articles, many=True)
             return Response(serializers.data)
+        
+class ChoiceRegion(APIView):
+    def post(self, request):
+        city = request.data.get('city')
+        if not city:
+            return Response({"error": "시를 선택해주세요."}, status=status.HTTP_400_BAD_REQUEST)
 
+        gu = Region.objects.filter(city=city).values_list('gu', flat=True).distinct()
+        goon = Region.objects.filter(city=city).values_list('goon', flat=True).distinct()
 
+        if not gu and not goon:
+            return Response({"error": "선택한 시 안에 구 또는 군이 없습니다."}, status=status.HTTP_404_NOT_FOUND)
+        return Response({
+            "city": city,
+            "gu": list(gu),
+            "goon": list(goon)
+        }, status=status.HTTP_200_OK)
+    
+class ArticlesByRegionView(APIView):
+    def post(self, request):
+        city = request.data.get('city')
+        gu = request.data.get('gu')
+        goon = request.data.get('goon')
+
+        if not city :
+            if not gu and goon:
+                return Response({"error": "시와 군,구를 모두 선택해주세요."}, status=status.HTTP_400_BAD_REQUEST)
+
+        region = get_object_or_404(Region, city=city, gu=gu, goon=goon)
+
+        articles = Article.objects.filter(region_id=region.id)
+        article_serializer = ArticleSerializer(articles, many=True)
+
+        if not article_serializer.data:
+            return Response({"message": "해당 지역에 기사 정보가 없습니다."}, status=status.HTTP_404_NOT_FOUND)
+
+        return Response(article_serializer.data, status=status.HTTP_200_OK)
+
+class MagazineByRegionView(APIView):
+    def post(self, request):
+        city = request.data.get('city')
+        gu = request.data.get('gu')
+        goon = request.data.get('goon')
+
+        if not city :
+            if not gu and goon:
+                return Response({"error": "시와 군,구를 모두 선택해주세요."}, status=status.HTTP_400_BAD_REQUEST)
+
+        region = get_object_or_404(Region, city=city, gu=gu, goon=goon)
+
+        magazines = Article.objects.filter(region_id=region.id)
+        magazine_serializer = MagazineSerializer(magazines, many=True)
+
+        if not magazine_serializer.data:
+            return Response({"message": "해당 지역에 기사 정보가 없습니다."}, status=status.HTTP_404_NOT_FOUND)
+
+        return Response(magazine_serializer.data, status=status.HTTP_200_OK)
 # Create your views here.
