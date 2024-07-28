@@ -171,16 +171,30 @@ class KakaoCallbackView(APIView): # 카카오 Callback
             return Response(status=status.HTTP_400_BAD_REQUEST)
         user_email = kakao_account.get('email')
 
-        '''
-        # 회원가입 및 로그인 처리 알고리즘 추가필요
-        '''
-        serializer = OAuthSerializer(data=kakao_account) # 해당 이메일을 가진 유저의 정보를 반환하기 위해
-        if serializer.is_valid(raise_exception=True):
-            I_user = serializer.validated_data["user"]
-            I_access_token = serializer.validated_data["access_token"]
-            I_refresh_token = serializer.validated_data["refresh_token"]
+        # 사용자의 프로필 정보 받아옴
+        user_profile = kakao_account.get('profile')
+        user_name = user_profile.get('nickname')
 
-                
+
+        '''
+        회원가입 및 로그인 처리 알고리즘
+        # 내부 시스템 회원가입 또는 로그인 처리
+        '''
+        
+        # 이미 존재하는 유저라면 로그인 처리
+        user = User.get_user_or_none_by_email(email=user_email)
+        if user is None:
+            # 존재하지 않는 유저라면 회원가입 처리
+            user = User.objects.create(
+                username = user_name,
+                email = user_email
+            )
+            user.set_password("1234") # 임의의 값으로 비밀번호 설정
+            user.save()
+
+        token = RefreshToken.for_user(user)
+        internal_refresh_token = str(token) # 내부 refresh token 반환
+        internal_access_token = str(token.access_token) # 내부 access 토큰 반환
 
         # 반환 값
         res = {
@@ -189,10 +203,11 @@ class KakaoCallbackView(APIView): # 카카오 Callback
             'user_email': user_email,
             'access_token': access_token,
             'refresh_token': refresh_token,
-            'user_id': I_user.id,
-            'user_email': I_user.email,
-            'I_access_token': I_access_token,
-            'I_refresh_token': I_refresh_token
+            'user_id': user.id,
+            'user_email': user.email,
+            'user_name' : user.username,
+            'internal_access_token': internal_access_token,
+            'internal_refresh_token': internal_refresh_token
         }
         response = Response(data=res, status=status.HTTP_200_OK)
         return response
