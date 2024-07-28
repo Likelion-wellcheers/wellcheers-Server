@@ -33,7 +33,8 @@ class RegisterSerializer(serializers.ModelSerializer):
         
         return data
 
-class AuthSerializer(serializers.ModelSerializer): # 로그인
+# 로그인/로그아웃
+class AuthSerializer(serializers.ModelSerializer):
     username = serializers.CharField(required=True)
     password = serializers.CharField(required=True)
 
