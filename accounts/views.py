@@ -145,6 +145,7 @@ class KakaoCallbackView(APIView): # 카카오 Callback
         token_json = token_res.json() # 응답을 JSON 형식으로 파싱
 
         access_token = token_json.get('access_token')
+        refresh_token = token_json.get('refresh_token')
 
         if not access_token: # access_token이 없는 경우, 잘못된 요청 응답을 반환
             return Response(status=status.HTTP_400_BAD_REQUEST)
@@ -166,19 +167,32 @@ class KakaoCallbackView(APIView): # 카카오 Callback
 
         # Kakao 계정 정보 가져옴
         kakao_account = user_info_json.get('kakao_account')
-        if not kakao_account:
+        if not kakao_account: # 카카오 계정이 없다면
             return Response(status=status.HTTP_400_BAD_REQUEST)
         user_email = kakao_account.get('email')
 
         '''
         # 회원가입 및 로그인 처리 알고리즘 추가필요
         '''
+        serializer = OAuthSerializer(data=kakao_account) # 해당 이메일을 가진 유저의 정보를 반환하기 위해
+        if serializer.is_valid(raise_exception=True):
+            I_user = serializer.validated_data["user"]
+            I_access_token = serializer.validated_data["access_token"]
+            I_refresh_token = serializer.validated_data["refresh_token"]
 
-        # 테스트 값 확인용
+                
+
+        # 반환 값
         res = {
             'social_type': social_type,
             'social_id': social_id,
             'user_email': user_email,
+            'access_token': access_token,
+            'refresh_token': refresh_token,
+            'user_id': I_user.id,
+            'user_email': I_user.email,
+            'I_access_token': I_access_token,
+            'I_refresh_token': I_refresh_token
         }
         response = Response(data=res, status=status.HTTP_200_OK)
         return response
