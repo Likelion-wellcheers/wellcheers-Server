@@ -18,5 +18,8 @@ urlpatterns = [
     path("kakao/callback/", KakaoCallbackView.as_view(), name="kakao_callback"),
 
     # 사용자 추가 정보 입력
-    path("information/", AddUserInfo.as_view(), name="user_information")
+    path("information/", AddUserInfo.as_view(), name="user_information"),
+
+    # 사용자 내 정보 보기
+    path("mypage/", MyPage.as_view(), name="user_mypage")
 ]
