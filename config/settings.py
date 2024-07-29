@@ -56,7 +56,10 @@ DJANGO_APPS = [
 ]
 
 PROJECT_APPS = [
-    'accounts',
+    "accounts",
+    "house",
+    "post",
+
 ]
 
 THIRD_PARTY_APPS = [
