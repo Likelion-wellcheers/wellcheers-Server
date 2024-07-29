@@ -198,14 +198,6 @@ class KakaoCallbackView(APIView): # 카카오 Callback
 
         # 반환 값
         res = {
-            'social_type': social_type,
-            'social_id': social_id,
-            'user_email': user_email,
-            'access_token': access_token,
-            'refresh_token': refresh_token,
-            'user_id': user.id,
-            'user_email': user.email,
-            'user_name' : user.username,
             'internal_access_token': internal_access_token,
             'internal_refresh_token': internal_refresh_token
         }
