@@ -104,12 +104,16 @@ class MyCart(APIView):
         center1_id = request.data.get('center1_id')
         center2_id = request.data.get('center2_id')
         center3_id = request.data.get('center3_id')
+        center4_id = request.data.get('center4_id')
+        center5_id = request.data.get('center5_id')
 
         center1 = Center.objects.get(id=center1_id)
         center2 = Center.objects.get(id=center2_id)
         center3 = Center.objects.get(id=center3_id)
+        center4 = Center.objects.get(id=center4_id)
+        center5 = Center.objects.get(id=center5_id)
 
-        cart = Cart.objects.create(center1=center1, center2=center2, center3=center3)
+        cart = Cart.objects.create(center1=center1, center2=center2, center3=center3, center4=center4, center=center5)
         serializer = CartSerializer(cart)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
@@ -123,6 +127,8 @@ class MyCart(APIView):
         center1_id = request.data.get('center1_id')
         center2_id = request.data.get('center2_id')
         center3_id = request.data.get('center3_id')
+        center4_id = request.data.get('center4_id')
+        center5_id = request.data.get('center5_id')
 
         if center1_id:
             center1 = Center.objects.get(id=center1_id)
@@ -135,6 +141,14 @@ class MyCart(APIView):
         if center3_id:
             center3 = Center.objects.get(id=center3_id)
             cart.center3 = center3
+            
+        if center4_id:
+            center4 = Center.objects.get(id=center4_id)
+            cart.center4 = center4
+
+        if center5_id:
+            center5 = Center.objects.get(id=center5_id)
+            cart.center5 = center5
 
         cart.save()
         serializer = CartSerializer(cart)

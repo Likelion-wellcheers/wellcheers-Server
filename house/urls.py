@@ -8,5 +8,5 @@ urlpatterns = [
     path("center/<int:id>", CenterView.as_view(), name="CenterView"),
     path("mycart/", MyCart.as_view(), name="cartView"),
     path("mycart/<int:id>",MyCart.as_view(), name="cartPut"),
-    path("mycart/report/<int:id>",MyReport.as_view(), name="ReportView")
+    path("mycart/<int:id>/report",MyReport.as_view(), name="ReportView")
 ]
