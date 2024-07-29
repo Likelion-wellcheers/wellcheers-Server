@@ -16,4 +16,7 @@ urlpatterns = [
     # 카카오 소셜 로그인
     path("kakao/login/", KakoLoginView.as_view(), name="kakao_login"),
     path("kakao/callback/", KakaoCallbackView.as_view(), name="kakao_callback"),
+
+    # 사용자 추가 정보 입력
+    path("information/", AddUserInfo.as_view(), name="user_information")
 ]

@@ -211,3 +211,29 @@ class KakaoCallbackView(APIView): # 카카오 Callback
         }
         response = Response(data=res, status=status.HTTP_200_OK)
         return response
+
+class AddUserInfo(APIView):
+    def put(self, request): # 사용자 추가정보 입력
+        user_email = request.data.get('email')
+        user = User.get_user_or_none_by_email(email=user_email) # 입력한 이메일로 사용자를 찾음
+
+        if user is None: # 해당 이메일을 가진 유저가 없는 경우
+            return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+
+        user.nickname = request.data.get('nickname')
+        user.city = request.data.get('city')
+        user.gu = request.data.get('gu', user.gu) # 입력이 없으면 기존값 유지
+        user.goon = request.data.get('goon', user.goon) # 입력이 없으면 기존값 유지
+        user.lifestyle = request.data.get('lifestyle')
+        user.save()
+
+        res = {
+            'username': user.username,
+            'email': user.email,
+            'nickname': user.nickname,
+            'city': user.city,
+            'gu': user.gu,
+            'goon': user.goon,
+            'lifestyle': user.lifestyle
+        }
+        return Response(data=res, status=status.HTTP_200_OK)
