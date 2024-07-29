@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
+from accounts.models import PursueLifestyle
 from accounts.serializers import *
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import logout
@@ -216,7 +217,19 @@ class AddUserInfo(APIView):
         user.city = request.data.get('city')
         user.gu = request.data.get('gu', user.gu) # 입력이 없으면 기존값 유지
         user.goon = request.data.get('goon', user.goon) # 입력이 없으면 기존값 유지
-        user.lifestyle = request.data.get('lifestyle')
+        
+        # pursue_lifestyle_id 처리
+        pursue_lifestyle_ids = request.data.get('pursue_lifestyle_id', []) # 입력된 id를 모두 받아와 리스트에 저장
+        if pursue_lifestyle_ids:
+            # 기존의 라이프스타일을 모두 제거하고 새로운 값으로 설정
+            user.pursue_lifestyle_id.clear()
+            for pursue_lifestyle_id in pursue_lifestyle_ids:
+                try:
+                    pursue_lifestyle = PursueLifestyle.objects.get(id=pursue_lifestyle_id)
+                    user.pursue_lifestyle_id.add(pursue_lifestyle)
+                except PursueLifestyle.DoesNotExist:
+                    return Response({"error": f"PursueLifestyle id {pursue_lifestyle_id} not found."}, status=status.HTTP_400_BAD_REQUEST)
+
         user.save()
 
         res = {
@@ -226,7 +239,7 @@ class AddUserInfo(APIView):
             'city': user.city,
             'gu': user.gu,
             'goon': user.goon,
-            'lifestyle': user.lifestyle
+            'pursue_lifestyle': [pl.id for pl in user.pursue_lifestyle_id.all()]
         }
         return Response(data=res, status=status.HTTP_200_OK)
     

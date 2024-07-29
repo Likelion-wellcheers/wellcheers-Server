@@ -14,7 +14,7 @@ class User(AbstractUser):
     city = models.CharField(verbose_name='시', max_length=20, blank=True)
     gu = models.CharField(verbose_name='구', max_length=20, blank=True)
     goon = models.CharField(verbose_name='군', max_length=20, blank=True)
-    pursue_lifestyle = models.ManyToManyField(PursueLifestyle)
+    pursue_lifestyle_id = models.ManyToManyField(PursueLifestyle, blank=True)
 
     @staticmethod
     def get_user_or_none_by_username(username): # username값으로 해당 유저를 찾는 모델 내부 함수 
