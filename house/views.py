@@ -141,7 +141,7 @@ class MyCart(APIView):
         if center3_id:
             center3 = Center.objects.get(id=center3_id)
             cart.center3 = center3
-            
+
         if center4_id:
             center4 = Center.objects.get(id=center4_id)
             cart.center4 = center4
@@ -181,7 +181,7 @@ class MyReport(APIView):
         cart_cost = float(serializer.data['total_cost'])
 
         if cart_cost>=mybudget*0.057:
-            return Response({"message": "적정 여가비를 초과합니다."}, status=status.HTTP_200_OK)
+            return Response({"message": "적정 여가비를 초과합니다."}, mybudget.data, cart_cost.data, status=status.HTTP_200_OK)
         else:
-            return Response({"message": "여유있는 여가비용이에요"}, status=status.HTTP_200_OK)
+            return Response({"message": "여유있는 여가비용이에요"},mybudget.data, cart_cost.data, status=status.HTTP_200_OK)
 
