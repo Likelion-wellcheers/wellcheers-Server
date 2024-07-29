@@ -1,16 +1,20 @@
-
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from rest_framework_simplejwt.tokens import UntypedToken
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 
 # Create your models here.
+class PursueLifestyle(models.Model):
+    id = models.AutoField(primary_key=True)
+    name = models.CharField(verbose_name='추구하는 라이프스타일', max_length=30)
+
+
 class User(AbstractUser):
     nickname = models.CharField(verbose_name="닉네임", max_length=10, blank=True)
     city = models.CharField(verbose_name='시', max_length=20, blank=True)
     gu = models.CharField(verbose_name='구', max_length=20, blank=True)
     goon = models.CharField(verbose_name='군', max_length=20, blank=True)
-    lifestyle = models.CharField(verbose_name="라이프스타일", max_length=30, blank=True)
+    pursue_lifestyle = models.ManyToManyField(PursueLifestyle)
 
     @staticmethod
     def get_user_or_none_by_username(username): # username값으로 해당 유저를 찾는 모델 내부 함수 
