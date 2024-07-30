@@ -66,6 +66,7 @@ THIRD_PARTY_APPS = [
     "corsheaders", 
     "rest_framework",
     "rest_framework_simplejwt",
+    "storages",
 
     # allauth 관련
     'allauth',
@@ -202,3 +203,18 @@ ACCOUNT_USERNAME_REQUIRED = True         # username 필드 사용 o
 ACCOUNT_AUTHENTICATION_METHOD = "email"
 
 SITE_ID = 1
+
+#AWS S3 관련 설정
+###AWS###
+AWS_ACCESS_KEY_ID = get_secret("AWS_ACCESS_KEY_ID") # .csv 파일에 있는 내용을 입력 Access key ID
+AWS_SECRET_ACCESS_KEY = get_secret("AWS_SECRET_ACCESS_KEY") # .csv 파일에 있는 내용을 입력 Secret access key
+AWS_REGION = 'ap-northeast-2'
+
+###S3###
+AWS_STORAGE_BUCKET_NAME = 'wellcheers'
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.%s.amazonaws.com' % (AWS_STORAGE_BUCKET_NAME,AWS_REGION)
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage' # 장고의 기본 파일저장소 위치를 S3버킷으로 지정.

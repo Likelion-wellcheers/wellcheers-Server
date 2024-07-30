@@ -25,30 +25,30 @@ class ChoiceRegion(APIView):
     def post(self, request):
         city = request.data.get('city')
         if not city:
-            return Response({"error": "시를 선택해주세요."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "시또는 도를 선택해주세요."}, status=status.HTTP_400_BAD_REQUEST)
 
-        gu = Region.objects.filter(city=city).values_list('gu', flat=True).distinct()
-        goon = Region.objects.filter(city=city).values_list('goon', flat=True).distinct()
+        gugoon = Region.objects.filter(city=city).values_list('gugoon', flat=True).distinct()
+        #goon = Region.objects.filter(city=city).values_list('goon', flat=True).distinct()
 
-        if not gu and not goon:
+        if not gugoon:
             return Response({"error": "선택한 시 안에 구 또는 군이 없습니다."}, status=status.HTTP_404_NOT_FOUND)
         return Response({
             "city": city,
-            "gu": list(gu),
-            "goon": list(goon)
+            "gugoon": list(gugoon),
+            #"goon": list(goon)
         }, status=status.HTTP_200_OK)
     
 class ArticlesByRegionView(APIView):
     def post(self, request):
         city = request.data.get('city')
-        gu = request.data.get('gu')
-        goon = request.data.get('goon')
+        gugoon = request.data.get('gugoon')
+        #goon = request.data.get('goon')
 
         if not city :
-            if not gu and goon:
+            if not gugoon:
                 return Response({"error": "시와 군,구를 모두 선택해주세요."}, status=status.HTTP_400_BAD_REQUEST)
 
-        region = get_object_or_404(Region, city=city, gu=gu, goon=goon)
+        region = get_object_or_404(Region, city=city, gugoon=gugoon)
 
         articles = Article.objects.filter(region_id=region.id)
         article_serializer = ArticleSerializer(articles, many=True)
@@ -61,14 +61,14 @@ class ArticlesByRegionView(APIView):
 class MagazineByRegionView(APIView):
     def post(self, request):
         city = request.data.get('city')
-        gu = request.data.get('gu')
-        goon = request.data.get('goon')
+        gugoon = request.data.get('gugoon')
+        #goon = request.data.get('goon')
 
         if not city :
-            if not gu and goon:
+            if not gugoon:
                 return Response({"error": "시와 군,구를 모두 선택해주세요."}, status=status.HTTP_400_BAD_REQUEST)
 
-        region = get_object_or_404(Region, city=city, gu=gu, goon=goon)
+        region = get_object_or_404(Region, city=city, gugoon=gugoon)
 
         magazines = Article.objects.filter(region_id=region.id)
         magazine_serializer = MagazineSerializer(magazines, many=True)

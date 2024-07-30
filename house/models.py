@@ -33,9 +33,10 @@ class Region (BaseModel):
     lstyle_id=models.ManyToManyField(Lifestyle, blank=True)
     infra_id=models.ManyToManyField(Infra, blank=True)
     hobby_id=models.ManyToManyField(Hobby, blank=True)
-    city= models.CharField(verbose_name="시",max_length=20)
-    gu= models.CharField(verbose_name="구",max_length=20, blank=True)
-    goon= models.CharField(verbose_name="군",max_length=20, blank=True) #모델을 수정해서 null True 로 안해두면 migrations 기 안됨...
+    city= models.CharField(verbose_name="시 또는 도 ",max_length=20)
+    gugoon= models.CharField(verbose_name="구 또는 군",max_length=20, blank=True)
+    longtitude=models.DecimalField(verbose_name="겅도",max_digits=15, decimal_places=10, blank=True)
+    latitude=models.DecimalField(verbose_name="위도",max_digits=15, decimal_places=10, blank= True)
     thumbnail = models.ImageField(null=True, blank=True, verbose_name="썸네일")
 
 
