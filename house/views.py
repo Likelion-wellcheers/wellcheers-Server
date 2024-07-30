@@ -16,10 +16,10 @@ from .serializers import FilterSerializer
 
 class Recommend(APIView):
 
-    def post(self, request):
-        serializer = FilterSerializer(data=request.data)
+    def post(self, request): # 입력한 주거 스타일을 받아오고 지역 추천 리스트 반환
+        serializer = FilterSerializer(data=request.data) # 입력받은 인프라, 취미, 라이프스타일 값을 정수 리스트로 저장
         if serializer.is_valid():
-            infra_values = serializer.validated_data.get('infra', [])
+            infra_values = serializer.validated_data.get('infra', []) # 입력받은 값이 없으면 빈 리스트[]를 반환
             hobby_values = serializer.validated_data.get('hobby', [])
             lifestyle_values = serializer.validated_data.get('lifestyle', [])
 
@@ -27,7 +27,7 @@ class Recommend(APIView):
 
             # 필터 조건 적용
             if infra_values:
-                regions = regions.filter(infra_id__in=infra_values).distinct()
+                regions = regions.filter(infra_id__in=infra_values).distinct() # region의 infra_id가 infra_values 리스트에 포함된 객체들을 남기고 중복된 결과 제거
             if hobby_values:
                 regions = regions.filter(hobby_id__in=hobby_values).distinct()
             if lifestyle_values:
@@ -73,7 +73,7 @@ class Recommend(APIView):
     #         return Response(region_serializer.data, status=status.HTTP_200_OK)
     #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-class RegionInformation(APIView):
+class RegionInformation(APIView): # 각 지역의 정보 확인
      def get(self, request, id):
 
         region= get_object_or_404(Region, id=id)
@@ -89,7 +89,7 @@ class CenterList(APIView): #해당되는 센터정보를 리스트로 보내줌.
         return Response(serializer.data)
      
 class CenterView(APIView):
-    def get(self,request, id):
+    def get(self,request, id): # 특정 시설 개별 조회
         center=get_object_or_404(Center,id=id)
         serializer=CenterSerializer(center)
         

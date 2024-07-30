@@ -43,6 +43,7 @@ class CartcostSerializer(serializers.ModelSerializer):
         fields= ['total_cost']
 
 class FilterSerializer(serializers.Serializer):
+    # 각 필드를 정수 리스트로 선언
     infra = serializers.ListField(
         child=serializers.IntegerField(), required=False
     )
