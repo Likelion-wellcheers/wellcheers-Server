@@ -1,4 +1,5 @@
 from django.db import models
+from accounts.models import User
 
 class BaseModel(models.Model):
     created_at= models.DateTimeField(verbose_name="등록일시", auto_now_add=True)
@@ -71,6 +72,6 @@ class Cart (BaseModel):
 class CenterReview(BaseModel):
     id=models.AutoField(primary_key=True)
     center_id=models.ForeignKey(Center, verbose_name="시설",on_delete=models.CASCADE)
-    #user_id=models.ForeignKey() # User 가 연결이 안되어있어 아직 주석처리.
+    user_id=models.ForeignKey(User, verbose_name="작성자", on_delete=models.CASCADE, null=True)
     content=models.CharField(verbose_name="후기내용", max_length=150) #일단은 150자 이내로 쓰게함
 
