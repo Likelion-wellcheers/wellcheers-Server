@@ -253,3 +253,16 @@ class MyPage(APIView):
         
         serializer = UserSerializer(user)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+    
+    def put(selt, request): # 사용자 내 정보 수정
+        token = request.data.get('access_token') # 엑세스 토큰으로 사용자 식별
+        user = User.get_user_or_none_by_token(token=token)
+
+        if user is None: # 해당 토큰으로 식별된 유저가 없는 경우
+            return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = UserSerializer(user, data=request.data, partial=True) # 원하는 값만 업데이트
+        if serializer.is_valid(): # update니까 유효성 검사 필요
+            serializer.save()
+            return Response(data=serializer.data, status=status.HTTP_200_OK) 
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

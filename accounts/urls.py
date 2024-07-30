@@ -20,6 +20,6 @@ urlpatterns = [
     # 사용자 추가 정보 입력
     path("information/", AddUserInfo.as_view(), name="user_information"),
 
-    # 사용자 내 정보 보기
+    # 사용자 내 정보 보기/수정
     path("mypage/", MyPage.as_view(), name="user_mypage")
 ]
