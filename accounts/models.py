@@ -10,6 +10,7 @@ class PursueLifestyle(models.Model):
 
 
 class User(AbstractUser):
+    id = models.AutoField(primary_key=True)
     nickname = models.CharField(verbose_name="닉네임", max_length=10, blank=True)
     city = models.CharField(verbose_name='시', max_length=20, blank=True)
     gu = models.CharField(verbose_name='구', max_length=20, blank=True)
