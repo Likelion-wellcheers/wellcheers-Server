@@ -59,6 +59,7 @@ PROJECT_APPS = [
     "accounts",
     "house",
     "post",
+    "qna",
 
 ]
 
