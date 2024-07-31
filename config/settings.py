@@ -54,11 +54,15 @@ DJANGO_APPS = [
 ]
 
 PROJECT_APPS = [
+    "account",
+    "house",
+    "post",
 
 ]
 
 THIRD_PARTY_APPS = [
     "corsheaders",
+    "rest_framework"
 ]
 
 
