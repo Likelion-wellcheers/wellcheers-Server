@@ -57,6 +57,8 @@ DJANGO_APPS = [
 
 PROJECT_APPS = [
     'accounts',
+    "house",
+    "post",
 ]
 
 THIRD_PARTY_APPS = [
@@ -71,7 +73,6 @@ THIRD_PARTY_APPS = [
 
     # providers
     'allauth.socialaccount.providers.kakao',
-]
 
 
 INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PARTY_APPS
