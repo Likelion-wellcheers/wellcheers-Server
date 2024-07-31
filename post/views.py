@@ -46,7 +46,7 @@ class ChoiceRegion(APIView):
     
 class WellfareByRegionView(APIView):
     def get(self, request,id ):
-        city_code= request.data.get(city_code=id)
+        city_code=id
         #goon = request.data.get('goon')
 
         if not city_code :
@@ -62,9 +62,15 @@ class WellfareByRegionView(APIView):
 
         return Response(article_serializer.data, status=status.HTTP_200_OK)
 
+class WellOne(APIView):
+     def get(self,request, id):
+        article=get_object_or_404(Article, id=id)
+        arts=ArticleSerializer(article)
+        return Response(arts.data)
+          
 class MagazineByRegionView(APIView):
     def get(self, request,id):
-        city_code= request.data.get(city_code=id)
+        city_code=id
         # city = request.data.get('city')
         # gugoon = request.data.get('gugoon')
         #goon = request.data.get('goon')
@@ -81,6 +87,12 @@ class MagazineByRegionView(APIView):
             return Response({"message": "해당 지역에 매거진 정보가 없습니다."}, status=status.HTTP_404_NOT_FOUND)
 
         return Response(magazine_serializer.data, status=status.HTTP_200_OK)
+    
+class MagOne(APIView):
+    def get(self, request, id):
+        magazine=get_object_or_404(Magazine, id=id)
+        Mags=MagazineSerializer(magazine)
+        return Response(Mags.data)
 
 class Regionreview(APIView): # 사용자가 쓰고 , 삭제하고, 리스트로 보는 용 함수
     def post(self, request, id):
@@ -108,15 +120,15 @@ class Regionreview(APIView): # 사용자가 쓰고 , 삭제하고, 리스트로 
         # return Response(serializer.data, status=status.HTTP_201_CREATED)
     
     def get(self, request, id): #해당되는 지역의 지역후기 불러오는 기능. id 가 city_code 값이다.
-        city_code= request.data.get(city_code=id)
+        city_code=id
 
         if not city_code:# city 존재여부 확인
                 return Response({"error": "해당되는 도시가 없습니다."}, status=status.HTTP_400_BAD_REQUEST)
 
         region = get_object_or_404(Region, city_code=city_code) #city_code 의 region으로 region 불러옴.
-        review_list= Review.objects.filter(region_id=region.id, Many=True) # FK 비교해서 리뷰 불러옴.
-
-        return Response(review_list.data)
+        review_list= Review.objects.filter(region_id=region.id) # FK 비교해서 리뷰 불러옴.
+        reviews=ReviewSerializer(review_list, many=True)
+        return Response(reviews.data)
 
     def delete(self, request, id):
         token = request.data.get('access_token')  # 엑세스 토큰으로 사용자 식별
