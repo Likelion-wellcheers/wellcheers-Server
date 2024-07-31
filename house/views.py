@@ -181,11 +181,11 @@ class MyReport(APIView):
         cart_cost = float(serializer.data['total_cost'])
 
         if cart_cost>=mybudget:
-            return Response({"message": "적정 여가비를 초과합니다. 내 예산과 현재 여가비용은?", 
+            return Response({"message": "true", 
                              "나의 적정여가비용": mybudget.data, 
                              "내가 담은 여가비용": cart_cost.data}, status=status.HTTP_200_OK)
         else:
-            return Response({"message": "여유있는 여가비용이에요. 내 예산과 현재 여가비용은?",
+            return Response({"message": "false",
                              "나의 적정여가비용": mybudget.data, 
                              "내가 담은 여가비용": cart_cost.data},status=status.HTTP_200_OK)
 
