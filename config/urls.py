@@ -21,16 +21,9 @@ from post.views import *
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-<<<<<<< HEAD
-    path("account/", include('accounts.urls')),
-    path("account/", include('allauth.urls')),
-    path("recommend/", include('house.urls'))
-]
-=======
     path("recommend/", include('house.urls')),
     path("issue/", include("post.urls")),
     path("account/", include('accounts.urls')),
     path("account/", include('allauth.urls')),
     path("qna/", include('qna.urls')),
 ]
->>>>>>> qna
