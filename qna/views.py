@@ -73,3 +73,14 @@ class QuestionDetail(APIView):
             serializer.save()
             return Response(data=serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class MyQuestion(APIView):
+    def get(self, request): # 내가 작성한 질문 리스트업
+        token = request.data.get('access_token') # 엑세스 토큰으로 사용자 식별
+        user = User.get_user_or_none_by_token(token=token)
+        user_id = user.id
+
+        questions = Question.objects.filter(q_user_id=user_id) # 해당 유저가 작성한 질문글
+        serializer = QuestionSerializer(questions, many=True)
+
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
