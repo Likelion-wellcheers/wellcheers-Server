@@ -33,6 +33,7 @@ class Region (BaseModel):
     lstyle_id=models.ManyToManyField(Lifestyle, blank=True)
     infra_id=models.ManyToManyField(Infra, blank=True)
     hobby_id=models.ManyToManyField(Hobby, blank=True)
+    city_code=models.IntegerField(verbose_name="프론트파일 도시코드", blank=True)
     city= models.CharField(verbose_name="시 또는 도 ",max_length=20)
     gugoon= models.CharField(verbose_name="구 또는 군",max_length=20, blank=True)
     longtitude=models.DecimalField(verbose_name="겅도",max_digits=15, decimal_places=10, blank=True)

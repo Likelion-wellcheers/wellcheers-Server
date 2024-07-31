@@ -25,30 +25,33 @@ class ChoiceRegion(APIView):
     def post(self, request):
         city = request.data.get('city')
         if not city:
-            return Response({"error": "시또는 도를 선택해주세요."}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({"error": "시 또는 도를 선택해주세요."}, status=status.HTTP_400_BAD_REQUEST)
 
+        choice_regions = Region.objects.filter(city=city) #해당 city 를 갖고있는 지역 개체들 불러오기
         gugoon = Region.objects.filter(city=city).values_list('gugoon', flat=True).distinct()
-        #goon = Region.objects.filter(city=city).values_list('goon', flat=True).distinct()
+        #goon = Region.objects.filter(city=city).values_list('goon', flat=True).distinct() 모델수정전
 
+        region_data = list(choice_regions.values()) #여러개일테니까 데이터값을 리스트로 불러옴.
         if not gugoon:
-            return Response({"error": "선택한 지역에 구 또는 군이 없습니다."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "시만 존재하는 도시입니다",
+                             "city":city,
+                             "region_data": region_data.city_code})
         return Response({
-            "city": city,
+            "city":city,
             "gugoon": list(gugoon),
-            #"goon": list(goon)
+            #"goon": list(goon),
+            "city_code": region_data.city_code # 걸러진 region 의 city_code 값과 해당되는 구군 이름도 따로 보내줌.
         }, status=status.HTTP_200_OK)
     
 class ArticlesByRegionView(APIView):
     def post(self, request):
-        city = request.data.get('city')
-        gugoon = request.data.get('gugoon')
+        city_code= request.data.get('city_code')
         #goon = request.data.get('goon')
 
-        if not city :
-            if not gugoon:
-                return Response({"error": "시와 군,구를 모두 선택해주세요."}, status=status.HTTP_400_BAD_REQUEST)
+        if not city_code :
+            return Response({"error": "해당되는 도시가 없습니다."}, status=status.HTTP_400_BAD_REQUEST)
 
-        region = get_object_or_404(Region, city=city, gugoon=gugoon)
+        region = get_object_or_404(Region, city_code=city_code)
 
         articles = Article.objects.filter(region_id=region.id)
         article_serializer = ArticleSerializer(articles, many=True)
@@ -60,15 +63,15 @@ class ArticlesByRegionView(APIView):
 
 class MagazineByRegionView(APIView):
     def post(self, request):
-        city = request.data.get('city')
-        gugoon = request.data.get('gugoon')
+        city_code= request.data.get('city_code')
+        # city = request.data.get('city')
+        # gugoon = request.data.get('gugoon')
         #goon = request.data.get('goon')
 
-        if not city :
-            if not gugoon:
-                return Response({"error": "시와 군,구를 모두 선택해주세요."}, status=status.HTTP_400_BAD_REQUEST)
+        if not city_code:
+                return Response({"error": "해당되는 도시가 없습니다."}, status=status.HTTP_400_BAD_REQUEST)
 
-        region = get_object_or_404(Region, city=city, gugoon=gugoon)
+        region = get_object_or_404(Region, city_code=city_code)
 
         magazines = Article.objects.filter(region_id=region.id)
         magazine_serializer = MagazineSerializer(magazines, many=True)
