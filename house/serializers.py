@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.conf import settings
-from .models import Infra, Hobby, Lifestyle, Region ,Center, CenterReview, Cart
+from .models import Infra, Hobby, Lifestyle, Region ,Center, CenterReview, Cart, Report
 
 class InfraSerializer(serializers.ModelSerializer):
     class Meta:

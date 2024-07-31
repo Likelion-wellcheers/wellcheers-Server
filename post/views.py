@@ -132,7 +132,7 @@ class Regionreviewlook(APIView): #개별로 후기보는거 함수
      def get(self,request, id):
           
           review=get_object_or_404(Review, id=id)
-          Reviewserializer=ReviewSerializer(review)
+          Reviewserializer=ReviewSerializer(review, many=True)
           return Response(Reviewserializer.data)
           
 # Create your views here.
