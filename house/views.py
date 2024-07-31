@@ -171,7 +171,7 @@ class MyReport(APIView):
         if mybudget is None:
             return Response({"error": "Budget not provided"}, status=status.HTTP_400_BAD_REQUEST)
         
-        mybudget = float(mybudget)
+        mybudget = float(mybudget)*0.057
 
         try:
             cart = Cart.objects.get(id=id)
@@ -180,8 +180,12 @@ class MyReport(APIView):
         serializer=CartcostSerializer(cart)
         cart_cost = float(serializer.data['total_cost'])
 
-        if cart_cost>=mybudget*0.057:
-            return Response({"message": "적정 여가비를 초과합니다."}, mybudget.data, cart_cost.data, status=status.HTTP_200_OK)
+        if cart_cost>=mybudget:
+            return Response({"message": "true", 
+                             "나의 적정여가비용": mybudget.data, 
+                             "내가 담은 여가비용": cart_cost.data}, status=status.HTTP_200_OK)
         else:
-            return Response({"message": "여유있는 여가비용이에요"},mybudget.data, cart_cost.data, status=status.HTTP_200_OK)
+            return Response({"message": "false",
+                             "나의 적정여가비용": mybudget.data, 
+                             "내가 담은 여가비용": cart_cost.data},status=status.HTTP_200_OK)
 

@@ -254,7 +254,7 @@ class MyPage(APIView):
         serializer = UserSerializer(user)
         return Response(data=serializer.data, status=status.HTTP_200_OK)
     
-    def put(selt, request): # 사용자 내 정보 수정
+    def put(self, request): # 사용자 내 정보 수정
         token = request.data.get('access_token') # 엑세스 토큰으로 사용자 식별
         user = User.get_user_or_none_by_token(token=token)
 

@@ -10,13 +10,13 @@ class BaseModel(models.Model):
 
 # Create your models here.
 
-class Article(BaseModel): #카드뉴스, 매거진, 정책관련 모델입니다. (이미지가 필수, 텍스트는 blank 가능.)
+class Article(BaseModel): #이 모델이 복지정책 모델입니다.
     id=models.AutoField(primary_key=True)
     region_id = models.ForeignKey(Region, verbose_name="지역", on_delete=models.CASCADE)
     image=models.ImageField(verbose_name="이미지")
     content=models.TextField(verbose_name="내용",  blank=True)
     
-class Magazine(BaseModel): #카드뉴스, 매거진, 정책관련 모델입니다. (이미지가 필수, 텍스트는 blank 가능.)
+class Magazine(BaseModel): # 매거진 관련모델. 
     id=models.AutoField(primary_key=True)
     region_id = models.ForeignKey(Region, verbose_name="지역", on_delete=models.CASCADE)
     image=models.ImageField(verbose_name="이미지")

@@ -1,9 +1,9 @@
 from django.contrib import admin
 from .models import Infra, Hobby, Region, Lifestyle, Center, CenterReview
 class RegionAdmin(admin.ModelAdmin):
-    list_display = ('id', 'city', 'gu', 'goon', 'created_at')
-    search_fields = ('city', 'gu', 'goon')
-    list_filter = ('city', 'gu')
+    list_display = ('id', 'city', 'gugoon', 'created_at')
+    search_fields = ('city', 'gugoon')
+    list_filter = ('city', 'gugoon')
     filter_horizontal = ('lstyle_id', 'infra_id', 'hobby_id')  # ManyToMany 필드를 위한 필터 사용
 
 # Register your models here.

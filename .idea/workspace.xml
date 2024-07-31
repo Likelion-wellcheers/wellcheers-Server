@@ -2,18 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="70066d13-d79b-4787-bd20-c25b880cc917" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/account/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/account/admin.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/account/apps.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/account/migrations/0001_initial.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/account/migrations/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/account/models.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/account/serializers.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/account/tests.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/account/urls.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/account/views.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/config/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/config/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/config/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -23,9 +13,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 0
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
   <component name="ProjectId" id="2jokkRPwqyTDEElgh9RFVa7JXGX" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
@@ -35,8 +25,8 @@
   "keyToString": {
     "RunOnceActivity.OpenDatabaseViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "account",
-    "last_opened_file_path": "/Users/parkyeonwoo/Library/CloudStorage/OneDrive-개인/문서/중앙대학교/멋쟁이 사자처럼 12기/해커톤/wellcheers-Server"
+    "git-widget-placeholder": "housepost",
+    "last_opened_file_path": "C:/myprj_4"
   }
 }]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
