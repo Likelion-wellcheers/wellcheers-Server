@@ -7,7 +7,7 @@ from rest_framework import status
 from house.models import Region
 from accounts.models import User
 from .models import Question
-from .serializers import QuestionSerializer
+from .serializers import QuestionSerializer, AnswerSerializer
 
 # Create your views here.
 class QnA(APIView):
@@ -55,3 +55,21 @@ class QuestionDetail(APIView):
         serializer = QuestionSerializer(question)
 
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+    
+    def post(self, request, q_id): # 각 질문글에 답변하기
+        
+        token = request.data.get('access_token') # 엑세스 토큰으로 사용자 식별
+        user = User.get_user_or_none_by_token(token=token)
+
+        data = { # 'q_id', 'a_user_id', 'content'
+            'q_id' : q_id,
+            'a_user_id' : user.id,
+            'content' : request.data.get('content')
+        }
+
+        serializer = AnswerSerializer(data=data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
