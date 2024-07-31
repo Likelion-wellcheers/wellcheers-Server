@@ -31,7 +31,7 @@ class ChoiceRegion(APIView):
         #goon = Region.objects.filter(city=city).values_list('goon', flat=True).distinct()
 
         if not gugoon:
-            return Response({"error": "선택한 시 안에 구 또는 군이 없습니다."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"error": "선택한 지역에 구 또는 군이 없습니다."}, status=status.HTTP_404_NOT_FOUND)
         return Response({
             "city": city,
             "gugoon": list(gugoon),

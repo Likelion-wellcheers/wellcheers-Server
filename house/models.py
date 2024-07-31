@@ -49,7 +49,9 @@ class Center (BaseModel):
     region_id= models.ForeignKey(Region, verbose_name="지역", on_delete=models.CASCADE)
     address=models.TextField(verbose_name="상세주소")
     time=models.CharField(verbose_name="운영시간정보",blank=True, max_length=150)
-    cost=models.IntegerField(verbose_name="이용비용")
+    cost=models.IntegerField(verbose_name="이용비용",blank=True)
+    longtitude=models.DecimalField(verbose_name="겅도",max_digits=15, decimal_places=10, blank=True)
+    latitude=models.DecimalField(verbose_name="위도",max_digits=15, decimal_places=10, blank= True)
     thumbnail = models.ImageField(null=True, blank=True, verbose_name="썸네일") #필로우 깔아줘서 이미지필드 사용가능
 
     def __str__(self):
