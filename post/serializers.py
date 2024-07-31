@@ -1,8 +1,14 @@
 from rest_framework import serializers
-from .models import Article
+from .models import Article, Magazine
 
-class Articleserializer(serializers.ModelSerializer):
+class ArticleSerializer(serializers.ModelSerializer):
 
     class Meta:
         model=Article
+        fields="__all__"
+
+class MagazineSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model=Magazine
         fields="__all__"

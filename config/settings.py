@@ -56,9 +56,17 @@ DJANGO_APPS = [
 ]
 
 PROJECT_APPS = [
+<<<<<<< HEAD
     'accounts',
     "house",
     "post",
+=======
+    "accounts",
+    "house",
+    "post",
+    "qna",
+
+>>>>>>> qna
 ]
 
 THIRD_PARTY_APPS = [
