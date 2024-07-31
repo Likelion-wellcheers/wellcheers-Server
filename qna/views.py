@@ -6,7 +6,7 @@ from rest_framework import status
 
 from house.models import Region
 from accounts.models import User
-from .models import Question
+from .models import Question, Answer
 from .serializers import QuestionSerializer, AnswerSerializer
 
 # Create your views here.
@@ -82,5 +82,19 @@ class MyQuestion(APIView):
 
         questions = Question.objects.filter(q_user_id=user_id) # 해당 유저가 작성한 질문글
         serializer = QuestionSerializer(questions, many=True)
+
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+class MyAnswer(APIView):
+    def get(self, request): # 내가 답변한 질문 리스트업
+        token = request.data.get('access_token') # 엑세스 토큰으로 사용자 식별
+        user = User.get_user_or_none_by_token(token=token)
+        user_id = user.id
+
+        answers = Answer.objects.filter(a_user_id=user_id) # 해당 유저의 답변들
+        question_list = [] # 각 답변에 해당하는 질문글 리스트
+        for answer in answers:
+            question_list.append(answer.q_id)
+        serializer = QuestionSerializer(question_list, many=True)
 
         return Response(data=serializer.data, status=status.HTTP_200_OK)
