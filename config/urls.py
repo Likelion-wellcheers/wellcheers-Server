@@ -25,4 +25,5 @@ urlpatterns = [
     path("issue/", include("post.urls")),
     path("account/", include('accounts.urls')),
     path("account/", include('allauth.urls')),
+    path("qna/", include('qna.urls')),
 ]
