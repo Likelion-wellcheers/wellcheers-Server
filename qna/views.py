@@ -6,6 +6,7 @@ from rest_framework import status
 
 from house.models import Region
 from accounts.models import User
+from .models import Question
 from .serializers import QuestionSerializer
 
 # Create your views here.
@@ -38,3 +39,11 @@ class QnA(APIView):
             serializer.save()
             return Response(data=serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+class QuestionList(APIView):
+    def get(self, request, region_id): # 해당 지역 질문글 리스트업
+
+        questions = Question.objects.filter(region_id=region_id) # 해당 지역의 질문들
+        serializer = QuestionSerializer(questions, many=True)
+
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
