@@ -13,14 +13,13 @@ from .serializers import QuestionSerializer, AnswerSerializer
 class QnA(APIView):
     def post(self, request): # 지역과 질문을 입력하여 질문을 생성
         city = request.data.get('city')
-        gu = request.data.get('gu')
-        goon = request.data.get('goon')
+        gugoon = request.data.get('gugoon')
 
         if not city :
-            if not gu and goon:
+            if not gugoon:
                 return Response({"error": "시와 군,구를 모두 선택해주세요."}, status=status.HTTP_400_BAD_REQUEST)
 
-        region = get_object_or_404(Region, city=city, gu=gu, goon=goon)
+        region = get_object_or_404(Region, city=city, gugoon=gugoon)
         token = request.data.get('access_token') # 엑세스 토큰으로 사용자 식별
         user = User.get_user_or_none_by_token(token=token)
 

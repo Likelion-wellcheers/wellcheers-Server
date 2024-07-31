@@ -43,7 +43,7 @@ class Region (BaseModel):
 
 
     def __str__(self):
-        return f"{self.id} - {self.city}-{self.gu}"
+        return f"{self.id} - {self.city}-{self.gugoon}"
 
 class Center (BaseModel):
     id=models.AutoField(primary_key=True)
