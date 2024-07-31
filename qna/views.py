@@ -47,3 +47,11 @@ class QuestionList(APIView):
         serializer = QuestionSerializer(questions, many=True)
 
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+class QuestionDetail(APIView):
+    def get(self, request, q_id): # 각 질문글 개별 보기
+
+        question = get_object_or_404(Question, id=q_id) # 선택한 질문글
+        serializer = QuestionSerializer(question)
+
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
