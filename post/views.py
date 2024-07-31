@@ -10,7 +10,7 @@ from rest_framework.views import status
 from rest_framework import status
 from django.http import Http404
 
-from .models import Article
+from .models import Article , Magazine
 from .serializers import ArticleSerializer,MagazineSerializer
 from house.models import Region
 from house.serializers import RegionSerializer
@@ -43,7 +43,7 @@ class ChoiceRegion(APIView):
             "city_code": region_data.city_code # 걸러진 region 의 city_code 값과 해당되는 구군 이름도 따로 보내줌.
         }, status=status.HTTP_200_OK)
     
-class ArticlesByRegionView(APIView):
+class WellfareByRegionView(APIView):
     def post(self, request):
         city_code= request.data.get('city_code')
         #goon = request.data.get('goon')
@@ -54,10 +54,10 @@ class ArticlesByRegionView(APIView):
         region = get_object_or_404(Region, city_code=city_code)
 
         articles = Article.objects.filter(region_id=region.id)
-        article_serializer = ArticleSerializer(articles, many=True)
+        article_serializer = MagazineSerializer(articles, many=True)
 
         if not article_serializer.data:
-            return Response({"message": "해당 지역에 기사 정보가 없습니다."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"message": "해당 지역에 복지정책 정보가 없습니다."}, status=status.HTTP_404_NOT_FOUND)
 
         return Response(article_serializer.data, status=status.HTTP_200_OK)
 
@@ -73,11 +73,11 @@ class MagazineByRegionView(APIView):
 
         region = get_object_or_404(Region, city_code=city_code)
 
-        magazines = Article.objects.filter(region_id=region.id)
-        magazine_serializer = MagazineSerializer(magazines, many=True)
+        magazines = Magazine.objects.filter(region_id=region.id)
+        magazine_serializer = ArticleSerializer(magazines, many=True)
 
         if not magazine_serializer.data:
-            return Response({"message": "해당 지역에 기사 정보가 없습니다."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"message": "해당 지역에 매거진 정보가 없습니다."}, status=status.HTTP_404_NOT_FOUND)
 
         return Response(magazine_serializer.data, status=status.HTTP_200_OK)
 # Create your views here.
