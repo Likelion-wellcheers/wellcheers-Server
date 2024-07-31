@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Infra, Hobby, Region, Lifestyle, Center, CenterReview
+from .models import Infra, Hobby, Region, Lifestyle, Center, CenterReview, House_type
 class RegionAdmin(admin.ModelAdmin):
     list_display = ('id', 'city', 'gu', 'goon', 'created_at')
     search_fields = ('city', 'gu', 'goon')

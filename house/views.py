@@ -22,7 +22,6 @@ class Recommend(APIView):
             infra_values = serializer.validated_data.get('infra', [])
             hobby_values = serializer.validated_data.get('hobby', [])
             lifestyle_values = serializer.validated_data.get('lifestyle', [])
-
             regions = Region.objects.all()
 
             # 필터 조건 적용
