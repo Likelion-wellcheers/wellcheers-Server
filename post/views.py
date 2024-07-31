@@ -18,6 +18,3 @@ class AtriclePost(APIView):
             articles=Article.objects.all()
             serializers=Articleserializer(articles, many=True)
             return Response(serializers.data)
-
-
-# Create your views here.
