@@ -20,5 +20,7 @@ from house.views import *
 
 urlpatterns = [
     path("admin/", admin.site.urls),
+    path("account/", include('accounts.urls')),
+    path("account/", include('allauth.urls')),
     path("recommend/", include('house.urls'))
 ]
