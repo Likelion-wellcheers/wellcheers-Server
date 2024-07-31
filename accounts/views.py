@@ -7,6 +7,7 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
+from accounts.models import PursueLifestyle
 from accounts.serializers import *
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import logout
@@ -198,14 +199,6 @@ class KakaoCallbackView(APIView): # 카카오 Callback
 
         # 반환 값
         res = {
-            'social_type': social_type,
-            'social_id': social_id,
-            'user_email': user_email,
-            'access_token': access_token,
-            'refresh_token': refresh_token,
-            'user_id': user.id,
-            'user_email': user.email,
-            'user_name' : user.username,
             'internal_access_token': internal_access_token,
             'internal_refresh_token': internal_refresh_token
         }
@@ -224,7 +217,19 @@ class AddUserInfo(APIView):
         user.city = request.data.get('city')
         user.gu = request.data.get('gu', user.gu) # 입력이 없으면 기존값 유지
         user.goon = request.data.get('goon', user.goon) # 입력이 없으면 기존값 유지
-        user.lifestyle = request.data.get('lifestyle')
+        
+        # pursue_lifestyle_id 처리
+        pursue_lifestyle_ids = request.data.get('pursue_lifestyle_id', []) # 입력된 id를 모두 받아와 리스트에 저장
+        if pursue_lifestyle_ids:
+            # 기존의 라이프스타일을 모두 제거하고 새로운 값으로 설정
+            user.pursue_lifestyle_id.clear()
+            for pursue_lifestyle_id in pursue_lifestyle_ids:
+                try:
+                    pursue_lifestyle = PursueLifestyle.objects.get(id=pursue_lifestyle_id)
+                    user.pursue_lifestyle_id.add(pursue_lifestyle)
+                except PursueLifestyle.DoesNotExist:
+                    return Response({"error": f"PursueLifestyle id {pursue_lifestyle_id} not found."}, status=status.HTTP_400_BAD_REQUEST)
+
         user.save()
 
         res = {
@@ -234,6 +239,30 @@ class AddUserInfo(APIView):
             'city': user.city,
             'gu': user.gu,
             'goon': user.goon,
-            'lifestyle': user.lifestyle
+            'pursue_lifestyle': [pl.id for pl in user.pursue_lifestyle_id.all()]
         }
         return Response(data=res, status=status.HTTP_200_OK)
+    
+class MyPage(APIView):
+    def get(self, request): # 사용자 내 정보 확인
+        token = request.data.get('access_token') # 엑세스 토큰으로 사용자 식별
+        user = User.get_user_or_none_by_token(token=token)
+
+        if user is None: # 해당 토큰으로 식별된 유저가 없는 경우
+            return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = UserSerializer(user)
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+    
+    def put(selt, request): # 사용자 내 정보 수정
+        token = request.data.get('access_token') # 엑세스 토큰으로 사용자 식별
+        user = User.get_user_or_none_by_token(token=token)
+
+        if user is None: # 해당 토큰으로 식별된 유저가 없는 경우
+            return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+        
+        serializer = UserSerializer(user, data=request.data, partial=True) # 원하는 값만 업데이트
+        if serializer.is_valid(): # update니까 유효성 검사 필요
+            serializer.save()
+            return Response(data=serializer.data, status=status.HTTP_200_OK) 
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -1,5 +1,5 @@
 from django.db import models
-# from account.models import User
+from accounts.models import User
 from house.models import Region
 
 class BaseModel(models.Model):
@@ -11,7 +11,7 @@ class BaseModel(models.Model):
 # Create your models here.
 class Request (BaseModel): #요청하기글 모델입니다
     id=models.AutoField(primary_key=True)
-    # user_id=models.ForeignKey(User, verbose_name="작성자", max_length=20)
+    user_id=models.ForeignKey(User, verbose_name="작성자", on_delete=models.CASCADE, null=True)
     region_id = models.ForeignKey(Region, verbose_name="지역", on_delete=models.CASCADE)
     finish=models.BooleanField(default=False)
     content=models.TextField(verbose_name="내용")
@@ -31,7 +31,7 @@ class Magazine(BaseModel): #카드뉴스, 매거진, 정책관련 모델입니�
 
 class Review(BaseModel): # 동네후기 모델입니다. 텍스트 비워둘 수 없음. 이미지 안올릴 수 있음.
     id=models.AutoField(primary_key=True)
-    # user_id=models.ForeignKey(User, verbose_name="작성자", max_length=20)
+    user_id=models.ForeignKey(User, verbose_name="작성자", on_delete=models.CASCADE, null=True)
     region_id = models.ForeignKey(Region, verbose_name="지역", on_delete=models.CASCADE)
     content=models.TextField(verbose_name="내용")
     score=models.IntegerField(verbose_name="별점")

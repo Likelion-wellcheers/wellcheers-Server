@@ -65,3 +65,10 @@ class AuthSerializer(serializers.ModelSerializer):
         }
 
         return data
+
+# 유저 내정보 전달 시리얼라이저
+class UserSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = User
+        fields = ['username', 'nickname', 'city', 'gu', 'goon'] # 이름, 나이, 현거주지
