@@ -80,4 +80,8 @@ class MagazineByRegionView(APIView):
             return Response({"message": "해당 지역에 매거진 정보가 없습니다."}, status=status.HTTP_404_NOT_FOUND)
 
         return Response(magazine_serializer.data, status=status.HTTP_200_OK)
+
+class Regionreview(APIView):
+    def post(self, request):
+         
 # Create your views here.
