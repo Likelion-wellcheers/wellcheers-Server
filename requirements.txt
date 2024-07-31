@@ -16,8 +16,15 @@ pillow==10.4.0
 PyJWT==2.8.0
 python-dateutil==2.9.0.post0
 requests==2.32.3
+<<<<<<< HEAD
 s3transfer==0.10.2
 six==1.16.0
+=======
+<<<<<<< HEAD
+pillow==10.4.0
+=======
+>>>>>>> qna
+>>>>>>> main
 sqlparse==0.5.1
 typing_extensions==4.12.2
 tzdata==2024.1
