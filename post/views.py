@@ -136,7 +136,9 @@ class Regionreview(APIView): # 사용자가 쓰고 , 삭제하고, 리스트로 
         if user is None:  # 해당 토큰으로 식별된 유저가 없는 경우
             return Response({"error": "User가 없습니다. 삭제 불가."}, status=status.HTTP_404_NOT_FOUND)
 
-        review = get_object_or_404(Review, id=id, user_id=user.id)  # 리뷰 불러오기 및 사용자 확인
+        review = get_object_or_404(Review, id=id)  # 리뷰 불러오기
+        if review.user_id != user.id:  # 리뷰의 작성자와 현재 사용자 비교
+            return Response({"error": "삭제 권한이 없습니다."}, status=status.HTTP_403_FORBIDDEN)
         review.delete()
         return Response({"success": "리뷰가 삭제되었습니다."}, status=status.HTTP_204_NO_CONTENT)
 
