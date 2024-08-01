@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Infra, Hobby, Region, Lifestyle, Center, CenterReview
+from .models import Infra, Hobby, Region, Lifestyle, Center, CenterReview, Cart, Report
+
 class RegionAdmin(admin.ModelAdmin):
     list_display = ('id', 'city', 'gugoon', 'created_at')
     search_fields = ('city', 'gugoon')
@@ -13,3 +14,5 @@ admin.site.register(Region, RegionAdmin)
 admin.site.register(Lifestyle)
 admin.site.register(Center)
 admin.site.register(CenterReview)
+admin.site.register(Cart)
+admin.site.register(Report)

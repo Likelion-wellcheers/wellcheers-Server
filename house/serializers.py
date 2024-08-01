@@ -23,9 +23,24 @@ class RegionSerializer(serializers.ModelSerializer):
         fields= "__all__"
 
 class CenterSerializer(serializers.ModelSerializer):
+
+    city = serializers.SerializerMethodField()
+    gugoon = serializers.SerializerMethodField()
+
     class Meta:
-        model=Center
-        fields="__all__"
+        model = Center
+        fields = ['id', 'name', 'region_id', 'address', 'time', 'cost', 'longtitude', 'latitude', 'thumbnail', 'city','gugoon']
+
+    def city(self, obj):
+        return obj.city()
+    def gugoon(self, obj):
+        return obj.gugoon()
+
+    region_id = serializers.PrimaryKeyRelatedField(queryset=Region.objects.all())
+    # class Meta:
+    #     model=Center
+    #     fields="__all__"
+
 
 class CartSerializer(serializers.ModelSerializer):
     center1 = CenterSerializer()

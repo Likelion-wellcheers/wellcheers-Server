@@ -2,7 +2,7 @@ from django.db import models
 from accounts.models import User
 
 class BaseModel(models.Model):
-    created_at= models.DateTimeField(verbose_name="등록일시", auto_now_add=True)
+    created_at= models.DateTimeField(verbose_name="등록일시", auto_now_add=True, blank=True)
 
     class Meta:
         abstract = True
@@ -58,6 +58,11 @@ class Center (BaseModel):
 
     def __str__(self):
         return f"{self.id} - {self.name}"
+    
+    def city(self):
+        return self.region_id.city
+    def gugoon(self):
+        return self.region_id.gugoon
     
 class Cart (BaseModel):
     id=models.AutoField(primary_key=True)
