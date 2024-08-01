@@ -217,19 +217,16 @@ class MyReport(APIView):
 class CenterReviewView(APIView):
     def post(self, request, id): # 해당 시설 후기 작성
         
-        center = get_object_or_404(Center, id=id)
-        print(center.id)
         token = request.data.get('access_token') # 엑세스 토큰으로 사용자 식별
         user = User.get_user_or_none_by_token(token=token)
 
         data = {
-            'center_id': center.id,
+            'center_id': id,
             'user_id': user.id,
             'content': request.data.get('content')
         }
 
         serializer = CenterReviewSerializer(data=data)
-        print(serializer)
 
         if serializer.is_valid():
             serializer.save()
