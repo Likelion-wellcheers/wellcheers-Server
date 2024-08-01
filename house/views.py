@@ -232,3 +232,10 @@ class CenterReviewView(APIView):
             serializer.save()
             return Response(data=serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def get(self, request, id): # 시설 후기 리스트업
+
+        center_reviews = CenterReview.objects.filter(center_id=id) # 해당 시설의 후기들
+        serializer = CenterReviewSerializer(center_reviews, many=True)
+
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
