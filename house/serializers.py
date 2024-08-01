@@ -53,3 +53,9 @@ class FilterSerializer(serializers.Serializer):
     lifestyle = serializers.ListField(
         child=serializers.IntegerField(), required=False
     )
+
+class CenterReviewSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = CenterReview
+        fields = ['center_id', 'user_id', 'content']

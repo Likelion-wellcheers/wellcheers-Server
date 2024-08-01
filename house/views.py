@@ -14,7 +14,7 @@ from accounts.models import User
 
 from .models import Region, Center, CenterReview, Cart
 from .serializers import RegionSerializer, CenterSerializer, CartSerializer, CartcostSerializer
-from .serializers import FilterSerializer
+from .serializers import FilterSerializer, CenterReviewSerializer
 
 class Recommend(APIView):
 
@@ -214,3 +214,24 @@ class MyReport(APIView):
                              "나의 적정여가비용": mybudget.data, 
                              "내가 담은 여가비용": cart_cost.data},status=status.HTTP_200_OK)
 
+class CenterReviewView(APIView):
+    def post(self, request, id): # 해당 시설 후기 작성
+        
+        center = get_object_or_404(Center, id=id)
+        print(center.id)
+        token = request.data.get('access_token') # 엑세스 토큰으로 사용자 식별
+        user = User.get_user_or_none_by_token(token=token)
+
+        data = {
+            'center_id': center.id,
+            'user_id': user.id,
+            'content': request.data.get('content')
+        }
+
+        serializer = CenterReviewSerializer(data=data)
+        print(serializer)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
