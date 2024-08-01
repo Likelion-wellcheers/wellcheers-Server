@@ -20,7 +20,11 @@ class QnA(APIView):
                 return Response({"error": "시와 군,구를 모두 선택해주세요."}, status=status.HTTP_400_BAD_REQUEST)
 
         region = get_object_or_404(Region, city=city, gugoon=gugoon)
-        token = request.data.get('access_token') # 엑세스 토큰으로 사용자 식별
+        bearer_token = request.headers.get('Authorization') # 엑세스 토큰으로 사용자 식별
+        if bearer_token is None:
+            return Response({"error": "Authorization header missing."}, status=status.HTTP_401_UNAUTHORIZED)
+
+        token = bearer_token.split('Bearer ')[-1] # 토큰만 가져옴
         user = User.get_user_or_none_by_token(token=token)
 
         data = {
@@ -57,7 +61,11 @@ class QuestionDetail(APIView):
     
     def post(self, request, q_id): # 각 질문글에 답변하기
         
-        token = request.data.get('access_token') # 엑세스 토큰으로 사용자 식별
+        bearer_token = request.headers.get('Authorization') # 엑세스 토큰으로 사용자 식별
+        if bearer_token is None:
+            return Response({"error": "Authorization header missing."}, status=status.HTTP_401_UNAUTHORIZED)
+
+        token = bearer_token.split('Bearer ')[-1] # 토큰만 가져옴
         user = User.get_user_or_none_by_token(token=token)
 
         data = { # 'q_id', 'a_user_id', 'content'
@@ -75,7 +83,11 @@ class QuestionDetail(APIView):
     
 class MyQuestion(APIView):
     def get(self, request): # 내가 작성한 질문 리스트업
-        token = request.data.get('access_token') # 엑세스 토큰으로 사용자 식별
+        bearer_token = request.headers.get('Authorization') # 엑세스 토큰으로 사용자 식별
+        if bearer_token is None:
+            return Response({"error": "Authorization header missing."}, status=status.HTTP_401_UNAUTHORIZED)
+
+        token = bearer_token.split('Bearer ')[-1] # 토큰만 가져옴
         user = User.get_user_or_none_by_token(token=token)
         user_id = user.id
 
@@ -86,7 +98,11 @@ class MyQuestion(APIView):
 
 class MyAnswer(APIView):
     def get(self, request): # 내가 답변한 질문 리스트업
-        token = request.data.get('access_token') # 엑세스 토큰으로 사용자 식별
+        bearer_token = request.headers.get('Authorization') # 엑세스 토큰으로 사용자 식별
+        if bearer_token is None:
+            return Response({"error": "Authorization header missing."}, status=status.HTTP_401_UNAUTHORIZED)
+
+        token = bearer_token.split('Bearer ')[-1] # 토큰만 가져옴
         user = User.get_user_or_none_by_token(token=token)
         user_id = user.id
 
