@@ -12,7 +12,8 @@ from django.http import Http404
 
 from accounts.models import User
 
-from .models import Region, Center, CenterReview, Cart
+from .models import Region, Center, CenterReview, Cart, User, Report
+
 from .serializers import RegionSerializer, CenterSerializer, CartSerializer, CartcostSerializer
 from .serializers import FilterSerializer, CenterReviewSerializer
 
@@ -94,7 +95,8 @@ class CenterView(APIView):
     def get(self,request, id): # 특정 시설 개별 조회
         center=get_object_or_404(Center,id=id)
         serializer=CenterSerializer(center)
-        
+        region=get_object_or_404(Region,id=center.region_id)
+
         if not serializer.data:
                 return Response({"message": "대상이 없습니다"}, status=status.HTTP_400_BAD_REQUEST)
         return Response(serializer.data)
@@ -213,6 +215,32 @@ class MyReport(APIView):
             return Response({"message": "false",
                              "나의 적정여가비용": mybudget.data, 
                              "내가 담은 여가비용": cart_cost.data},status=status.HTTP_200_OK)
+        
+class ReportWrite(APIView):
+    def post(self, request):
+        token = request.data.get('access_token') # 엑세스 토큰으로 사용자 식별
+        user = User.get_user_or_none_by_token(token=token)
+        if user is None: # 해당 토큰으로 식별된 유저가 없는 경우
+            return Response({"error": "User 가 없습니다. 글쓰기 불가."}, status=status.HTTP_404_NOT_FOUND)
+        
+        plan1 = request.data.get('plan1')
+        plan2 = request.data.get('plan2')
+        plan3 = request.data.get('plan3')
+
+        if not plan1 or not plan2 or not plan3:
+            return JsonResponse({"error": "모든 계획을 입력해야 합니다."}, status=400)
+
+        report = Report(user_id=user, plan1=plan1, plan2=plan2, plan3=plan3)
+        report.save()
+
+        return Response({
+            "id": report.id,
+            "user_id": report.user_id.id,
+            "plan1": report.plan1,
+            "plan2": report.plan2,
+            "plan3": report.plan3,
+        }, status=202)
+
 
 class CenterReviewView(APIView):
     def post(self, request, id): # 해당 시설 후기 작성
