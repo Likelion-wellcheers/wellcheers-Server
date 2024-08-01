@@ -125,9 +125,9 @@ DATABASES = {
         # "NAME": BASE_DIR / "db.sqlite3",
         "ENGINE": "django.db.backends.mysql",
         "NAME": "wellcheers",
-        "USER": "root",
-        "PASSWORD": "00d08041D!",
-        "HOST" : "localhost",
+        "USER": "admin",
+        "PASSWORD": get_secret("DB_PASSWORD"),
+        "HOST" : get_secret("DB_HOST"),
         "PORT" : "3306",
     }
 }
