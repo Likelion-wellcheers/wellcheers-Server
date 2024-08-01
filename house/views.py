@@ -207,7 +207,7 @@ class ReportWrite(APIView):
         report = Report(user_id=user, plan1=plan1, plan2=plan2, plan3=plan3)
         report.save()
 
-        return JsonResponse({
+        return Response({
             "id": report.id,
             "user_id": report.user_id.id,
             "plan1": report.plan1,
