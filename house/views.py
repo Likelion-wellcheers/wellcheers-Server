@@ -10,9 +10,12 @@ from rest_framework.views import status
 from rest_framework import status
 from django.http import Http404
 
-from .models import Region, Center, CenterReview, Cart , User, Report
+from accounts.models import User
+
+from .models import Region, Center, CenterReview, Cart, User, Report
+
 from .serializers import RegionSerializer, CenterSerializer, CartSerializer, CartcostSerializer
-from .serializers import FilterSerializer
+from .serializers import FilterSerializer, CenterReviewSerializer
 
 class Recommend(APIView):
 
@@ -96,7 +99,30 @@ class CenterView(APIView):
 
         if not serializer.data:
                 return Response({"message": "대상이 없습니다"}, status=status.HTTP_400_BAD_REQUEST)
-        return Response(serializer.data, {"도시":region.city,"군구":region.gugoon})
+        return Response(serializer.data)
+
+    def put(self, request, id): # 특정 시설 하나 저장 또는 저장 취소
+        center = get_object_or_404(Center, id=id)
+        token = request.data.get('access_token') # 엑세스 토큰으로 사용자 식별
+        user = User.get_user_or_none_by_token(token=token)
+
+        is_like = request.data.get('like') # 저장 눌렀으면 1, 안 눌렀으면 0
+        if is_like: # 해당 시설을 저장
+            user.like_center.add(center)
+        else: # 해당 시설을 저장 취소
+            user.like_center.remove(center)
+        user.save()
+
+        print(user.like_center)
+
+        data = {
+            'center_id': center.id,
+            'user_id': user.id,
+            'is_like': is_like,
+            'user_like_center': [l_center.id for l_center in user.like_center.all()]
+        }
+
+        return Response(data=data, status=status.HTTP_200_OK)
     
 class MyCart(APIView):
 
@@ -216,3 +242,28 @@ class ReportWrite(APIView):
         }, status=202)
 
 
+class CenterReviewView(APIView):
+    def post(self, request, id): # 해당 시설 후기 작성
+        
+        token = request.data.get('access_token') # 엑세스 토큰으로 사용자 식별
+        user = User.get_user_or_none_by_token(token=token)
+
+        data = {
+            'center_id': id,
+            'user_id': user.id,
+            'content': request.data.get('content')
+        }
+
+        serializer = CenterReviewSerializer(data=data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def get(self, request, id): # 시설 후기 리스트업
+
+        center_reviews = CenterReview.objects.filter(center_id=id) # 해당 시설의 후기들
+        serializer = CenterReviewSerializer(center_reviews, many=True)
+
+        return Response(data=serializer.data, status=status.HTTP_200_OK)

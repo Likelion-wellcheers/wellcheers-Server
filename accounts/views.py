@@ -215,8 +215,7 @@ class AddUserInfo(APIView):
 
         user.nickname = request.data.get('nickname')
         user.city = request.data.get('city')
-        user.gu = request.data.get('gu', user.gu) # 입력이 없으면 기존값 유지
-        user.goon = request.data.get('goon', user.goon) # 입력이 없으면 기존값 유지
+        user.gugoon = request.data.get('gugoon', user.gugoon) # 입력이 없으면 기존값 유지
         
         # pursue_lifestyle_id 처리
         pursue_lifestyle_ids = request.data.get('pursue_lifestyle_id', []) # 입력된 id를 모두 받아와 리스트에 저장
@@ -237,8 +236,7 @@ class AddUserInfo(APIView):
             'email': user.email,
             'nickname': user.nickname,
             'city': user.city,
-            'gu': user.gu,
-            'goon': user.goon,
+            'gugoon': user.gugoon,
             'pursue_lifestyle': [pl.id for pl in user.pursue_lifestyle_id.all()]
         }
         return Response(data=res, status=status.HTTP_200_OK)
