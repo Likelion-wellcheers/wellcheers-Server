@@ -78,15 +78,16 @@ class Recommend(APIView):
 
 class RegionInformation(APIView): # 각 지역의 정보 확인
      def get(self, request, id):
-
-        region= get_object_or_404(Region, id=id)
+        city_code=id
+        region= get_object_or_404(Region, city_code=city_code)
         serializer=RegionSerializer(region)
         return Response(serializer.data)
      
 class CenterList(APIView): #해당되는 센터정보를 리스트로 보내줌.
     def get(self,request,id):
 
-        region=get_object_or_404(Region, id=id) #해당하는 지역 아이디 받아올 수 있음.
+        city_code= id
+        region=get_object_or_404(Region, city_code=city_code) #해당하는 지역 시티코드 받아올 수 있음.
         center_filter = Center.objects.filter(region_id=region.id)
         serializer=CenterSerializer(center_filter, many=True)
         return Response(serializer.data)
@@ -95,7 +96,7 @@ class CenterView(APIView):
     def get(self,request, id): # 특정 시설 개별 조회
         center=get_object_or_404(Center,id=id)
         serializer=CenterSerializer(center)
-        region=get_object_or_404(Region,id=center.region_id)
+        #region=get_object_or_404(Region,id=center.region_id)
 
         if not serializer.data:
                 return Response({"message": "대상이 없습니다"}, status=status.HTTP_400_BAD_REQUEST)
