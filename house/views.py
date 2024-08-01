@@ -281,3 +281,19 @@ class CenterReviewView(APIView):
         serializer = CenterReviewSerializer(center_reviews, many=True)
 
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+class CenterReviewLookView(APIView):
+    def get(self, request, id): # 시설 후기 개별 보기
+        center_review = get_object_or_404(CenterReview, id=id)
+        data = {
+            'center_id': id,
+            'user_id': center_review.user_id.id,
+            'content': center_review.content
+        }
+
+        serializer = CenterReviewSerializer(data=data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
