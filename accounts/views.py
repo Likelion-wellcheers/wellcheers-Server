@@ -243,7 +243,11 @@ class AddUserInfo(APIView):
     
 class MyPage(APIView):
     def get(self, request): # 사용자 내 정보 확인
-        token = request.data.get('access_token') # 엑세스 토큰으로 사용자 식별
+        bearer_token = request.headers.get('Authorization') # 엑세스 토큰으로 사용자 식별
+        if bearer_token is None:
+            return Response({"error": "Authorization header missing."}, status=status.HTTP_401_UNAUTHORIZED)
+
+        token = bearer_token.split('Bearer ')[-1] # 토큰만 가져옴
         user = User.get_user_or_none_by_token(token=token)
 
         if user is None: # 해당 토큰으로 식별된 유저가 없는 경우
@@ -253,7 +257,11 @@ class MyPage(APIView):
         return Response(data=serializer.data, status=status.HTTP_200_OK)
     
     def put(self, request): # 사용자 내 정보 수정
-        token = request.data.get('access_token') # 엑세스 토큰으로 사용자 식별
+        bearer_token = request.headers.get('Authorization') # 엑세스 토큰으로 사용자 식별
+        if bearer_token is None:
+            return Response({"error": "Authorization header missing."}, status=status.HTTP_401_UNAUTHORIZED)
+
+        token = bearer_token.split('Bearer ')[-1] # 토큰만 가져옴
         user = User.get_user_or_none_by_token(token=token)
 
         if user is None: # 해당 토큰으로 식별된 유저가 없는 경우
