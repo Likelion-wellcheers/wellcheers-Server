@@ -11,6 +11,7 @@ from rest_framework import status
 from django.http import Http404
 
 from accounts.models import User
+from house.permissions import IsWriterOrReadOnly
 
 from .models import Region, Center, CenterReview, Cart, User, Report
 
@@ -283,6 +284,8 @@ class CenterReviewView(APIView):
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 class CenterReviewLookView(APIView):
+    permission_classes = [IsWriterOrReadOnly]
+    
     def get(self, request, id): # 시설 후기 개별 보기
         center_review = get_object_or_404(CenterReview, id=id)
         data = {
@@ -297,3 +300,8 @@ class CenterReviewLookView(APIView):
             serializer.save()
             return Response(data=serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, id): # 시설 후기 삭제
+        center_review = get_object_or_404(CenterReview, id=id)
+        center_review.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)

@@ -12,6 +12,7 @@ class IsWriterOrReadOnly(permissions.BasePermission):
     def has_object_permission(self, request, view, obj):
 				
         if request.method in permissions.SAFE_METHODS:
+            print(obj.writer == request.user)
             return True
         
         return obj.writer == request.user
