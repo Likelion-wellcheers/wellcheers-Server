@@ -77,6 +77,16 @@ class CenterReviewSerializer(serializers.ModelSerializer):
 
 class ReportSerializer(serializers.ModelSerializer):
 
+    city = serializers.SerializerMethodField()
+    gugoon = serializers.SerializerMethodField()
+
     class Meta:
         model = Report
-        fields = ['user_id', 'region_id', 'plan1', 'plan2', 'plan3']
+        fields = ['user_id', 'region_id', 'plan1', 'plan2', 'plan3', 'city', 'gugoon']
+
+    def city(self, obj):
+        return obj.city()
+    def gugoon(self, obj):
+        return obj.gugoon()
+
+    region_id = serializers.PrimaryKeyRelatedField(queryset=Region.objects.all())

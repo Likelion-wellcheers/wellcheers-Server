@@ -91,3 +91,8 @@ class Report(BaseModel): #사용자 여가시설 리포트
     plan1=models.TextField(verbose_name="계획1")
     plan2=models.TextField(verbose_name="계획2")
     plan3=models.TextField(verbose_name="계획3")
+
+    def city(self):
+        return self.region_id.city
+    def gugoon(self):
+        return self.region_id.gugoon
