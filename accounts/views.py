@@ -132,14 +132,15 @@ class KakoLoginView(APIView): # 카카오 로그인
 class KakaoCallbackView(APIView): # 카카오 Callback
     parser_classes = (AllowAny,) # 모든 사용자 접근 허용
 
-    def get(self, request): # 사용자가 oauth 로그인시 code 검증 및 로그인 처리
+    def post(self, request): # 사용자가 oauth 로그인시 code 검증 및 로그인 처리
         '''
         kakao access_token 요청 및 user_info(사용자 정보) 요청
         '''
-        data = request.query_params.copy() # 쿼리 파라미터에서 authorization code를 추출
+        # data = request.query_params.copy() # 쿼리 파라미터에서 authorization code를 추출
 
         # access_token 발급 요청
-        code = data.get('code')
+        # code = data.get('code')
+        code = request.data.get('code')
         if not code:
             return Response(status=status.HTTP_400_BAD_REQUEST) # code가 없는 경우 잘못된 요청 응답 반환
         
