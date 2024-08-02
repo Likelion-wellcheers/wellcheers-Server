@@ -12,6 +12,8 @@ from accounts.serializers import *
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import logout
 
+from house.models import CenterReview
+from house.serializers import CenterReviewSerializer
 from post.models import Review
 from post.serializers import ReviewSerializer
 
@@ -290,5 +292,22 @@ class MyPageRegionReview(APIView):
         
         region_reviews = Review.objects.filter(user_id=user.id) # 해당 사용자가 작성한 지역 후기들
         serializer = ReviewSerializer(region_reviews, many=True)
+
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+class MyPageCenterReview(APIView):
+    def get(self, request): # 해당 사용자가 작성한 시설 후기 리스트업
+        bearer_token = request.headers.get('Authorization') # 엑세스 토큰으로 사용자 식별
+        if bearer_token is None:
+            return Response({"error": "Authorization header missing."}, status=status.HTTP_401_UNAUTHORIZED)
+
+        token = bearer_token.split('Bearer ')[-1] # 토큰만 가져옴
+        user = User.get_user_or_none_by_token(token=token)
+
+        if user is None: # 해당 토큰으로 식별된 유저가 없는 경우
+            return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+        
+        center_review = CenterReview.objects.filter(user_id=user.id) # 해당 사용자가 작성한 지역 후기들
+        serializer = CenterReviewSerializer(center_review, many=True)
 
         return Response(data=serializer.data, status=status.HTTP_200_OK)
