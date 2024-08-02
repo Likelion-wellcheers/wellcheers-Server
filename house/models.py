@@ -87,7 +87,7 @@ class CenterReview(BaseModel):
 class Report(BaseModel): #사용자 여가시설 리포트
     id=models.AutoField(primary_key=True)
     user_id=models.ForeignKey(User, verbose_name="작성자", on_delete=models.CASCADE)
+    region_id=models.ForeignKey(Region, verbose_name="지역", on_delete=models.CASCADE, null=True)
     plan1=models.TextField(verbose_name="계획1")
     plan2=models.TextField(verbose_name="계획2")
     plan3=models.TextField(verbose_name="계획3")
-
