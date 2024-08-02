@@ -7,12 +7,12 @@ class InfraSerializer(serializers.ModelSerializer):
         model = Infra
         fields = ['id', 'name']
 
-class MoodSerializer(serializers.ModelSerializer):
+class HobbySerializer(serializers.ModelSerializer):
     class Meta:
         model = Hobby
         fields = ['id', 'name']
 
-class HouseTypeSerializer(serializers.ModelSerializer):
+class LifestyleSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lifestyle
         fields = ['id', 'name']
