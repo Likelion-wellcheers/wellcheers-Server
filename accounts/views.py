@@ -1,4 +1,4 @@
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 
 def ReturnUser(request): # 헤더에 입력된 토큰으로 유저를 반환하는 메소드
     bearer_token = request.headers.get('Authorization') # 엑세스 토큰으로 사용자 식별
@@ -220,40 +220,41 @@ class KakaoCallbackView(APIView): # 카카오 Callback
         response = Response(data=res, status=status.HTTP_200_OK)
         return response
 
-# class AddUserInfo(APIView):
-#     def put(self, request): # 사용자 추가정보 입력
-#         user = ReturnUser(request=request)
-#         if user is None: # 해당 이메일을 가진 유저가 없는 경우
-#             return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+class AddUserInfo(APIView):
+    def put(self, request): # 사용자 추가정보 입력
+        user = ReturnUser(request=request)
+        if user is None: # 해당 이메일을 가진 유저가 없는 경우
+            return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
-#         user.nickname = request.data.get('nickname')
-#         city = request.data.get('city')
-#         gugoon = request.data.get('gugoon', user.gugoon) # 입력이 없으면 기존값 유지
-#         user.region_id = get_object_or_404
+        user.nickname = request.data.get('nickname')
+        city = request.data.get('city')
+        gugoon = request.data.get('gugoon', user.gugoon) # 입력이 없으면 기존값 유지
+        user.region_id = get_object_or_404(Region, city=city, gugoon=gugoon)
         
-#         # pursue_lifestyle_id 처리
-#         pursue_lifestyle_ids = request.data.get('pursue_lifestyle_id', []) # 입력된 id를 모두 받아와 리스트에 저장
-#         if pursue_lifestyle_ids:
-#             # 기존의 라이프스타일을 모두 제거하고 새로운 값으로 설정
-#             user.pursue_lifestyle_id.clear()
-#             for pursue_lifestyle_id in pursue_lifestyle_ids:
-#                 try:
-#                     pursue_lifestyle = PursueLifestyle.objects.get(id=pursue_lifestyle_id)
-#                     user.pursue_lifestyle_id.add(pursue_lifestyle)
-#                 except PursueLifestyle.DoesNotExist:
-#                     return Response({"error": f"PursueLifestyle id {pursue_lifestyle_id} not found."}, status=status.HTTP_400_BAD_REQUEST)
+        # pursue_lifestyle_id 처리
+        pursue_lifestyle_ids = request.data.get('pursue_lifestyle_id', []) # 입력된 id를 모두 받아와 리스트에 저장
+        if pursue_lifestyle_ids:
+            # 기존의 라이프스타일을 모두 제거하고 새로운 값으로 설정
+            user.pursue_lifestyle_id.clear()
+            for pursue_lifestyle_id in pursue_lifestyle_ids:
+                try:
+                    pursue_lifestyle = PursueLifestyle.objects.get(id=pursue_lifestyle_id)
+                    user.pursue_lifestyle_id.add(pursue_lifestyle)
+                except PursueLifestyle.DoesNotExist:
+                    return Response({"error": f"PursueLifestyle id {pursue_lifestyle_id} not found."}, status=status.HTTP_400_BAD_REQUEST)
 
-#         user.save()
+        user.save()
 
-#         res = {
-#             'username': user.username,
-#             'email': user.email,
-#             'nickname': user.nickname,
-#             'city': user.city,
-#             'gugoon': user.gugoon,
-#             'pursue_lifestyle': [pl.id for pl in user.pursue_lifestyle_id.all()]
-#         }
-#         return Response(data=res, status=status.HTTP_200_OK)
+        res = {
+            'username': user.username,
+            'email': user.email,
+            'nickname': user.nickname,
+            'city': user.city,
+            'gugoon': user.gugoon,
+            'region_id': user.region_id.id,
+            'pursue_lifestyle': [pl.id for pl in user.pursue_lifestyle_id.all()]
+        }
+        return Response(data=res, status=status.HTTP_200_OK)
 
 class ChoiceRegion(APIView):
     def post(self, request): # 시를 입력하면 그 시의 군구 citycode들을 반환
