@@ -179,7 +179,7 @@ class CenterView(APIView):
 
         return Response(data=data, status=status.HTTP_200_OK)
     
-class MyCart(APIView):
+class MyCartInsert(APIView):
 
     def post(self, request):
 
@@ -195,10 +195,12 @@ class MyCart(APIView):
         center4 = Center.objects.get(id=center4_id)
         center5 = Center.objects.get(id=center5_id)
 
-        cart = Cart.objects.create(center1=center1, center2=center2, center3=center3, center4=center4, center=center5)
+        cart = Cart.objects.create(center1=center1, center2=center2, center3=center3, center4=center4, center5=center5)
         serializer = CartSerializer(cart)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+class MyCart(APIView):
     
     def put(self, request, id):
         try:
@@ -262,20 +264,24 @@ class MyReport(APIView):
         serializer=CartcostSerializer(cart)
         cart_cost = float(serializer.data['total_cost'])
 
-        if cart_cost>=mybudget:
-            return Response({"message": "true", 
-                             "나의 적정여가비용": mybudget.data, 
-                             "내가 담은 여가비용": cart_cost.data}, status=status.HTTP_200_OK)
+        if cart_cost >= mybudget:
+            return Response({
+                "message": "true",
+                "나의 적정여가비용": mybudget,
+                "내가 담은 여가비용": cart_cost
+            }, status=status.HTTP_200_OK)
         else:
-            return Response({"message": "false",
-                             "나의 적정여가비용": mybudget.data, 
-                             "내가 담은 여가비용": cart_cost.data},status=status.HTTP_200_OK)
+            return Response({
+                "message": "false",
+                "나의 적정여가비용": mybudget,
+                "내가 담은 여가비용": cart_cost
+            }, status=status.HTTP_200_OK)
         
 class ReportWrite(APIView):
     def post(self, request):
         user = ReturnUser(request=request)
-        if user is None: # 해당 토큰으로 식별된 유저가 없는 경우
-            return Response({"error": "User 가 없습니다. 글쓰기 불가."}, status=status.HTTP_404_NOT_FOUND)
+        if not hasattr(user, 'id'):  # User 객체가 아닌 경우를 확인합니다.
+            return Response({"error": "User가 없습니다. 글쓰기 불가."}, status=status.HTTP_404_NOT_FOUND)
         
         plan1 = request.data.get('plan1')
         plan2 = request.data.get('plan2')
@@ -283,10 +289,16 @@ class ReportWrite(APIView):
 
         if not plan1 or not plan2 or not plan3:
             return JsonResponse({"error": "모든 계획을 입력해야 합니다."}, status=400)
+        
+        city_code = request.data.get("city_code")
+        if not city_code:
+            return JsonResponse({"error": "City code를 입력해야 합니다."}, status=400)
+
+        region = get_object_or_404(Region, city_code=city_code)
 
         data = {
             'user_id': user.id,
-            'region_id': request.data.get('region_id'),
+            'region_id': region.id,
             'plan1': plan1,
             'plan2': plan2,
             'plan3': plan3

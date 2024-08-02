@@ -46,10 +46,12 @@ class CartSerializer(serializers.ModelSerializer):
     center1 = CenterSerializer()
     center2 = CenterSerializer()
     center3 = CenterSerializer()
+    center4 = CenterSerializer()
+    center5 = CenterSerializer()
 
     class Meta:
         model = Cart
-        fields = ['id', 'center1', 'center2', 'center3', 'total_cost']
+        fields = ['id', 'center1', 'center2', 'center3', 'center4', 'center5', 'total_cost']
 
 class CartcostSerializer(serializers.ModelSerializer):
     total_cost = serializers.DecimalField(max_digits=10, decimal_places=2) #소숫점 포함 10자리
