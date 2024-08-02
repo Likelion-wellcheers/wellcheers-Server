@@ -294,6 +294,12 @@ class MyPage(APIView):
         if user is None: # 해당 토큰으로 식별된 유저가 없는 경우
             return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
         
+        city = request.data.get('city')
+        gugoon = request.data.get('gugoon', user.gugoon) # 입력이 없으면 기존값 유지
+        user.city = city
+        user.gugoon = gugoon
+        user.region_id = get_object_or_404(Region, city=city, gugoon=gugoon)
+
         serializer = UserSerializer(user, data=request.data, partial=True) # 원하는 값만 업데이트
         if serializer.is_valid(): # update니까 유효성 검사 필요
             serializer.save()
