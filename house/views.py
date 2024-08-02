@@ -304,6 +304,6 @@ class CenterReviewLookView(APIView):
     
     def delete(self, request, id): # 시설 후기 삭제
         center_review = get_object_or_404(CenterReview, id=id)
-        self.check_object_permissions(self.request, center_review)
+        self.check_object_permissions(self.request, center_review) # 해당 객체 permission 체크
         center_review.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
