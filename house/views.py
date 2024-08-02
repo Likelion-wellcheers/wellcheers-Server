@@ -17,7 +17,7 @@ from .permissions import IsWriterOrReadOnly
 from .models import Region, Center, CenterReview, Cart, User, Report
 from .models import Infra, Hobby, Lifestyle
 
-from .serializers import RegionSerializer, CenterSerializer, CartSerializer, CartcostSerializer
+from .serializers import RegionSerializer, CenterSerializer, CartSerializer, CartcostSerializer, ReportSerializer
 from .serializers import FilterSerializer, CenterReviewSerializer, LifestyleSerializer, HobbySerializer, InfraSerializer
 
 class Recommend(APIView):
@@ -260,16 +260,18 @@ class ReportWrite(APIView):
         if not plan1 or not plan2 or not plan3:
             return JsonResponse({"error": "모든 계획을 입력해야 합니다."}, status=400)
 
-        report = Report(user_id=user, plan1=plan1, plan2=plan2, plan3=plan3)
-        report.save()
-
-        return Response({
-            "id": report.id,
-            "user_id": report.user_id.id,
-            "plan1": report.plan1,
-            "plan2": report.plan2,
-            "plan3": report.plan3,
-        }, status=202)
+        data = {
+            'user_id': user.id,
+            'region_id': request.data.get('region_id'),
+            'plan1': plan1,
+            'plan2': plan2,
+            'plan3': plan3
+        }
+        serializer = ReportSerializer(data=data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CenterReviewView(APIView):
