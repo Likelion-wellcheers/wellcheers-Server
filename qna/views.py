@@ -8,6 +8,7 @@ from accounts.views import ReturnUser
 
 from house.models import Region
 from accounts.models import User
+from .permissions import IsWriterOrReadOnly
 from .models import Question, Answer
 from .serializers import QuestionSerializer, AnswerSerializer
 
@@ -41,14 +42,17 @@ class QnA(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
 class QuestionList(APIView):
-    def get(self, request, region_id): # 해당 지역 질문글 리스트업
-
-        questions = Question.objects.filter(region_id=region_id) # 해당 지역의 질문들
+    def get(self, request, citycode): # 해당 지역 질문글 리스트업
+        
+        region = Region.objects.get(city_code=citycode) # citycode로 해당 지역 가져옴
+        questions = Question.objects.filter(region_id=region.id) # 해당 지역의 질문들
         serializer = QuestionSerializer(questions, many=True)
 
         return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 class QuestionDetail(APIView):
+    permission_classes = [IsWriterOrReadOnly]
+
     def get(self, request, q_id): # 각 질문글 개별 보기
 
         question = get_object_or_404(Question, id=q_id) # 선택한 질문글
@@ -72,6 +76,18 @@ class QuestionDetail(APIView):
             serializer.save()
             return Response(data=serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def put(self, request, q_id): # 주민들 궁금증 해결 여부 처리
+        qna = get_object_or_404(Question, id=q_id)
+        self.check_object_permissions(self.request, qna) # 해당 객체 permission 체크
+
+        if request.data.get('is_finish') == 1: # 해결된 상태라면
+            qna.finish = 1
+        else: 
+            qna.finish = 0
+        serializer = QuestionSerializer(qna)
+
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
     
 class MyQuestion(APIView):
     def get(self, request): # 내가 작성한 질문 리스트업
