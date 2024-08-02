@@ -12,8 +12,8 @@ from accounts.serializers import *
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import logout
 
-from house.models import CenterReview
-from house.serializers import CenterReviewSerializer, CenterSerializer
+from house.models import CenterReview, Report
+from house.serializers import CenterReviewSerializer, CenterSerializer, ReportSerializer
 from post.models import Review
 from post.serializers import ReviewSerializer
 
@@ -332,7 +332,7 @@ class MyPageLike(APIView):
                 region_center_all[region_id].append(center)
             else:
                 region_center_all[region_id] = [center]
-        print(region_center_all)
+        # print(region_center_all)
 
         # 지역별로 묶인 시설 목록을 시리얼라이저에 맞게 변환
         serialized_data = {}
@@ -340,3 +340,20 @@ class MyPageLike(APIView):
             serialized_data[region_id] = CenterSerializer(centers, many=True).data
 
         return Response(data=serialized_data, status=status.HTTP_200_OK)
+
+class MyPagePlan(APIView):
+    def get(self, request): # 내가 작성한 계획 리스트업
+        bearer_token = request.headers.get('Authorization') # 엑세스 토큰으로 사용자 식별
+        if bearer_token is None:
+            return Response({"error": "Authorization header missing."}, status=status.HTTP_401_UNAUTHORIZED)
+
+        token = bearer_token.split('Bearer ')[-1] # 토큰만 가져옴
+        user = User.get_user_or_none_by_token(token=token)
+
+        if user is None: # 해당 토큰으로 식별된 유저가 없는 경우
+            return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+        
+        my_plans = Report.objects.filter(user_id=user.id) # 해당 유저가 작성한 계획들
+        serializer = ReportSerializer(my_plans, many=True)
+
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
