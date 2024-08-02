@@ -41,14 +41,10 @@ class QnA(APIView):
             return Response(data=serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-class QuestionList(APIView):
-    def get(self, request, citycode): # 해당 지역 질문글 리스트업
-        
-        region = Region.objects.get(city_code=citycode) # citycode로 해당 지역 가져옴
-        questions = Question.objects.filter(region_id=region.id) # 해당 지역의 질문들
-        serializer = QuestionSerializer(questions, many=True)
+# class QuestionList(APIView):
+#     def get(self, request): # 해당 지역 질문글 리스트업
+#         user = ReturnUser(request=request)
 
-        return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 class QuestionDetail(APIView):
     permission_classes = [IsWriterOrReadOnly]
