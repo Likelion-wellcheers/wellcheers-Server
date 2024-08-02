@@ -1,3 +1,4 @@
+import random
 from django.shortcuts import render
 from django.http import JsonResponse # 추가 
 from django.shortcuts import get_object_or_404 # 추가
@@ -14,6 +15,9 @@ from accounts.views import ReturnUser
 
 from accounts.models import User
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
+
+from post.models import Magazine
+from post.serializers import MagazineSerializer
 from .permissions import IsWriterOrReadOnly
 
 from .models import Region, Center, CenterReview, Cart, User, Report
@@ -21,6 +25,35 @@ from .models import Infra, Hobby, Lifestyle
 
 from .serializers import RegionSerializer, CenterSerializer, CartSerializer, CartcostSerializer, ReportSerializer
 from .serializers import FilterSerializer, CenterReviewSerializer, LifestyleSerializer, HobbySerializer, InfraSerializer
+
+class Home(APIView):
+    
+    def get(self, request): # 홈화면
+        # 지역 3개 랜덤 추천 리스트업
+        # 해당 지역들의 매거진 하나씩 총 3개 리스트업
+        length = len(Region.objects.all())
+        region_id_list = random.sample(range(1, length+1), 3)
+        region_list = []
+        region_list.append(get_object_or_404(Region, id=region_id_list[0]))
+        region_list.append(get_object_or_404(Region, id=region_id_list[1]))
+        region_list.append(get_object_or_404(Region, id=region_id_list[2]))
+        
+        magazine_list = []
+        for region_id in region_id_list:
+            magazines = Magazine.objects.filter(region_id=region_id)
+            if magazines.exists():
+                magazine = random.choice(magazines)
+                magazine_list.append(magazine)
+
+        region_serializer = RegionSerializer(region_list, many=True)
+        magazine_serializer = MagazineSerializer(magazine_list, many=True)
+        data = {
+            'region_list': region_serializer.data,
+            'magazine_list': magazine_serializer.data
+        }
+        print(data)
+
+        return Response(data=data, status=status.HTTP_200_OK)
 
 class Recommend(APIView):
 

@@ -1,7 +1,8 @@
 from django.urls import path
-from .views import CenterReviewLookView, Recommend, RegionInformation, CenterReviewView, CenterList, CenterView, MyCart, MyReport, MyCartInsert, ReportWrite
+from .views import Home, CenterReviewLookView, Recommend, RegionInformation, CenterReviewView, CenterList, CenterView, MyCart, MyReport, MyCartInsert, ReportWrite
 
 urlpatterns = [
+    path("home/", Home.as_view(), name='home'),
     path("", Recommend.as_view(), name='recommend'),
     path("<int:id>/", RegionInformation.as_view(), name="Region_information"),
     path("<int:id>/center/", CenterList.as_view(), name="CenterList"),
