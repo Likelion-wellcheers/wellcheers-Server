@@ -13,7 +13,7 @@ from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import logout
 
 from house.models import CenterReview
-from house.serializers import CenterReviewSerializer
+from house.serializers import CenterReviewSerializer, CenterSerializer
 from post.models import Review
 from post.serializers import ReviewSerializer
 
@@ -311,3 +311,32 @@ class MyPageCenterReview(APIView):
         serializer = CenterReviewSerializer(center_review, many=True)
 
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+class MyPageLike(APIView):
+    def get(self, request): # 해당 사용자가 저장한 시설(지역으로 묶어서) 리스트업
+        bearer_token = request.headers.get('Authorization') # 엑세스 토큰으로 사용자 식별
+        if bearer_token is None:
+            return Response({"error": "Authorization header missing."}, status=status.HTTP_401_UNAUTHORIZED)
+
+        token = bearer_token.split('Bearer ')[-1] # 토큰만 가져옴
+        user = User.get_user_or_none_by_token(token=token)
+
+        if user is None: # 해당 토큰으로 식별된 유저가 없는 경우
+            return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+        
+        like_centers = user.like_center.all()
+        region_center_all = dict()
+        for center in like_centers:
+            region_id = str(center.region_id)  # 해당 시설의 지역 id값을 문자열로 변환하여 dict에 넣음
+            if region_id in region_center_all: # 해당 지역 id가 dict에 있다면
+                region_center_all[region_id].append(center)
+            else:
+                region_center_all[region_id] = [center]
+        print(region_center_all)
+
+        # 지역별로 묶인 시설 목록을 시리얼라이저에 맞게 변환
+        serialized_data = {}
+        for region_id, centers in region_center_all.items():
+            serialized_data[region_id] = CenterSerializer(centers, many=True).data
+
+        return Response(data=serialized_data, status=status.HTTP_200_OK)
