@@ -29,3 +29,9 @@ class Review(BaseModel): # 지역후기 모델입니다. 텍스트 비워둘 수
     content=models.TextField(verbose_name="내용")
     score=models.IntegerField(verbose_name="별점")
     image=models.ImageField(verbose_name="이미지", blank=True)
+
+    def city(self):
+        return self.region_id.city
+    
+    def gugoon(self):
+        return self.region_id.gugoon
