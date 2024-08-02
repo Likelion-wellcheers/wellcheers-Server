@@ -22,7 +22,7 @@ from accounts.serializers import *
 from rest_framework.permissions import IsAuthenticated
 from django.contrib.auth import logout
 
-from house.models import CenterReview, Report
+from house.models import CenterReview, Region, Report
 from house.serializers import CenterReviewSerializer, CenterSerializer, ReportSerializer
 from post.models import Review
 from post.serializers import ReviewSerializer
@@ -227,8 +227,9 @@ class KakaoCallbackView(APIView): # 카카오 Callback
 #             return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
 #         user.nickname = request.data.get('nickname')
-#         user.city = request.data.get('city')
-#         user.gugoon = request.data.get('gugoon', user.gugoon) # 입력이 없으면 기존값 유지
+#         city = request.data.get('city')
+#         gugoon = request.data.get('gugoon', user.gugoon) # 입력이 없으면 기존값 유지
+#         user.region_id = get_object_or_404
         
 #         # pursue_lifestyle_id 처리
 #         pursue_lifestyle_ids = request.data.get('pursue_lifestyle_id', []) # 입력된 id를 모두 받아와 리스트에 저장
@@ -253,7 +254,27 @@ class KakaoCallbackView(APIView): # 카카오 Callback
 #             'pursue_lifestyle': [pl.id for pl in user.pursue_lifestyle_id.all()]
 #         }
 #         return Response(data=res, status=status.HTTP_200_OK)
-    
+
+class ChoiceRegion(APIView):
+    def post(self, request): # 시를 입력하면 그 시의 군구 citycode들을 반환
+        city = request.data.get('city')
+        if not city:
+            return Response({"error": "시 또는 도를 선택해주세요."}, status=status.HTTP_400_BAD_REQUEST)
+
+        choice_regions = Region.objects.filter(city=city) #해당 city 를 갖고있는 지역 개체들 불러오기
+        gugoon = Region.objects.filter(city=city).values_list('gugoon', flat=True).distinct()
+        #goon = Region.objects.filter(city=city).values_list('goon', flat=True).distinct() 모델수정전
+
+        region_data = list(choice_regions.values()) #여러개일테니까 데이터값을 리스트로 불러옴.
+        citycodes = [region.get('city_code') for region in region_data]
+
+        return Response({
+            "city":city,
+            "gugoon": list(gugoon),
+            #"goon": list(goon),
+            "city_codes": citycodes # 걸러진 region 의 city_code 값과 해당되는 구군 이름도 따로 보내줌
+        }, status=status.HTTP_200_OK)
+
 class MyPage(APIView):
     def get(self, request): # 사용자 내 정보 확인
         user = ReturnUser(request=request)
