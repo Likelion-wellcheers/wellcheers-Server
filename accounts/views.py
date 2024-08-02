@@ -229,6 +229,8 @@ class AddUserInfo(APIView):
         user.nickname = request.data.get('nickname')
         city = request.data.get('city')
         gugoon = request.data.get('gugoon', user.gugoon) # 입력이 없으면 기존값 유지
+        user.city = city
+        user.gugoon = gugoon
         user.region_id = get_object_or_404(Region, city=city, gugoon=gugoon)
         
         # pursue_lifestyle_id 처리
