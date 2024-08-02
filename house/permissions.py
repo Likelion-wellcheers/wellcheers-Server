@@ -7,12 +7,12 @@ class IsWriterOrReadOnly(permissions.BasePermission):
         if request.method in permissions.SAFE_METHODS:
             return True
         
+        # 수정 기능은 인증된 사용자만 가능
         return request.user.is_authenticated # 인증된 사용자인지 여부 검증
     
-    def has_object_permission(self, request, view, obj):
-				
+    def has_object_permission(self, request, view, obj):	
         if request.method in permissions.SAFE_METHODS:
-            print(obj.writer == request.user)
             return True
-        
-        return obj.writer == request.user
+
+        # 수정 기능은 작성자만 허용
+        return obj.user_id == request.user

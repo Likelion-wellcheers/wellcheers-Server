@@ -11,7 +11,8 @@ from rest_framework import status
 from django.http import Http404
 
 from accounts.models import User
-from house.permissions import IsWriterOrReadOnly
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from .permissions import IsWriterOrReadOnly
 
 from .models import Region, Center, CenterReview, Cart, User, Report
 
@@ -289,7 +290,7 @@ class CenterReviewLookView(APIView):
     def get(self, request, id): # 시설 후기 개별 보기
         center_review = get_object_or_404(CenterReview, id=id)
         data = {
-            'center_id': id,
+            'center_id': center_review.center_id.id,
             'user_id': center_review.user_id.id,
             'content': center_review.content
         }
@@ -303,5 +304,6 @@ class CenterReviewLookView(APIView):
     
     def delete(self, request, id): # 시설 후기 삭제
         center_review = get_object_or_404(CenterReview, id=id)
+        self.check_object_permissions(self.request, center_review)
         center_review.delete()
         return Response(status=status.HTTP_204_NO_CONTENT)
