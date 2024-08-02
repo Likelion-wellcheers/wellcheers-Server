@@ -227,8 +227,9 @@ class KakaoCallbackView(APIView): # 카카오 Callback
 #             return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
 #         user.nickname = request.data.get('nickname')
-#         user.city = request.data.get('city')
-#         user.gugoon = request.data.get('gugoon', user.gugoon) # 입력이 없으면 기존값 유지
+#         city = request.data.get('city')
+#         gugoon = request.data.get('gugoon', user.gugoon) # 입력이 없으면 기존값 유지
+#         user.region_id = get_object_or_404
         
 #         # pursue_lifestyle_id 처리
 #         pursue_lifestyle_ids = request.data.get('pursue_lifestyle_id', []) # 입력된 id를 모두 받아와 리스트에 저장

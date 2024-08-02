@@ -12,6 +12,8 @@ class PursueLifestyle(models.Model):
 class User(AbstractUser):
     id = models.AutoField(primary_key=True)
     nickname = models.CharField(verbose_name="닉네임", max_length=10, blank=True)
+    city= models.CharField(verbose_name="시 또는 도",max_length=20, blank=True)
+    gugoon= models.CharField(verbose_name="구 또는 군",max_length=20, blank=True)
     region_id= models.ForeignKey('house.Region', verbose_name="지역", on_delete=models.CASCADE, blank=True, null=True)
     pursue_lifestyle_id = models.ManyToManyField(PursueLifestyle, blank=True)
     like_center = models.ManyToManyField('house.Center', verbose_name="저장한 시설", blank=True)
