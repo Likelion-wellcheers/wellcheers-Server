@@ -29,7 +29,7 @@ class AtriclePost(APIView):
         return Response(serializers.data)
         
 class ChoiceRegion(APIView):
-    def post(self, request):
+    def post(self, request): # 시를 입력하면 그 시의 군구 citycode들을 반환
         city = request.data.get('city')
         if not city:
             return Response({"error": "시 또는 도를 선택해주세요."}, status=status.HTTP_400_BAD_REQUEST)
@@ -39,15 +39,13 @@ class ChoiceRegion(APIView):
         #goon = Region.objects.filter(city=city).values_list('goon', flat=True).distinct() 모델수정전
 
         region_data = list(choice_regions.values()) #여러개일테니까 데이터값을 리스트로 불러옴.
-        if not gugoon:
-            return Response({"error": "시만 존재하는 도시입니다",
-                             "city":city,
-                             "region_data": region_data.city_code})
+        citycodes = [region.get('city_code') for region in region_data]
+
         return Response({
             "city":city,
             "gugoon": list(gugoon),
             #"goon": list(goon),
-            "city_code": region_data.city_code # 걸러진 region 의 city_code 값과 해당되는 구군 이름도 따로 보내줌.
+            "city_codes": citycodes # 걸러진 region 의 city_code 값과 해당되는 구군 이름도 따로 보내줌
         }, status=status.HTTP_200_OK)
     
 class WellfareByRegionView(APIView):
