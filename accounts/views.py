@@ -342,7 +342,7 @@ class MyPageLike(APIView):
         return Response(data=serialized_data, status=status.HTTP_200_OK)
 
 class MyPagePlan(APIView):
-    def get(self, request): # 내가 작성한 계획 리스트업
+    def get(self, request): # 해당 사용자가 작성한 계획 리스트업
         bearer_token = request.headers.get('Authorization') # 엑세스 토큰으로 사용자 식별
         if bearer_token is None:
             return Response({"error": "Authorization header missing."}, status=status.HTTP_401_UNAUTHORIZED)
