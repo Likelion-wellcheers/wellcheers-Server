@@ -220,39 +220,39 @@ class KakaoCallbackView(APIView): # 카카오 Callback
         response = Response(data=res, status=status.HTTP_200_OK)
         return response
 
-class AddUserInfo(APIView):
-    def put(self, request): # 사용자 추가정보 입력
-        user = ReturnUser(request=request)
-        if user is None: # 해당 이메일을 가진 유저가 없는 경우
-            return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+# class AddUserInfo(APIView):
+#     def put(self, request): # 사용자 추가정보 입력
+#         user = ReturnUser(request=request)
+#         if user is None: # 해당 이메일을 가진 유저가 없는 경우
+#             return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
-        user.nickname = request.data.get('nickname')
-        user.city = request.data.get('city')
-        user.gugoon = request.data.get('gugoon', user.gugoon) # 입력이 없으면 기존값 유지
+#         user.nickname = request.data.get('nickname')
+#         user.city = request.data.get('city')
+#         user.gugoon = request.data.get('gugoon', user.gugoon) # 입력이 없으면 기존값 유지
         
-        # pursue_lifestyle_id 처리
-        pursue_lifestyle_ids = request.data.get('pursue_lifestyle_id', []) # 입력된 id를 모두 받아와 리스트에 저장
-        if pursue_lifestyle_ids:
-            # 기존의 라이프스타일을 모두 제거하고 새로운 값으로 설정
-            user.pursue_lifestyle_id.clear()
-            for pursue_lifestyle_id in pursue_lifestyle_ids:
-                try:
-                    pursue_lifestyle = PursueLifestyle.objects.get(id=pursue_lifestyle_id)
-                    user.pursue_lifestyle_id.add(pursue_lifestyle)
-                except PursueLifestyle.DoesNotExist:
-                    return Response({"error": f"PursueLifestyle id {pursue_lifestyle_id} not found."}, status=status.HTTP_400_BAD_REQUEST)
+#         # pursue_lifestyle_id 처리
+#         pursue_lifestyle_ids = request.data.get('pursue_lifestyle_id', []) # 입력된 id를 모두 받아와 리스트에 저장
+#         if pursue_lifestyle_ids:
+#             # 기존의 라이프스타일을 모두 제거하고 새로운 값으로 설정
+#             user.pursue_lifestyle_id.clear()
+#             for pursue_lifestyle_id in pursue_lifestyle_ids:
+#                 try:
+#                     pursue_lifestyle = PursueLifestyle.objects.get(id=pursue_lifestyle_id)
+#                     user.pursue_lifestyle_id.add(pursue_lifestyle)
+#                 except PursueLifestyle.DoesNotExist:
+#                     return Response({"error": f"PursueLifestyle id {pursue_lifestyle_id} not found."}, status=status.HTTP_400_BAD_REQUEST)
 
-        user.save()
+#         user.save()
 
-        res = {
-            'username': user.username,
-            'email': user.email,
-            'nickname': user.nickname,
-            'city': user.city,
-            'gugoon': user.gugoon,
-            'pursue_lifestyle': [pl.id for pl in user.pursue_lifestyle_id.all()]
-        }
-        return Response(data=res, status=status.HTTP_200_OK)
+#         res = {
+#             'username': user.username,
+#             'email': user.email,
+#             'nickname': user.nickname,
+#             'city': user.city,
+#             'gugoon': user.gugoon,
+#             'pursue_lifestyle': [pl.id for pl in user.pursue_lifestyle_id.all()]
+#         }
+#         return Response(data=res, status=status.HTTP_200_OK)
     
 class MyPage(APIView):
     def get(self, request): # 사용자 내 정보 확인
