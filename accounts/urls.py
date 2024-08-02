@@ -24,7 +24,7 @@ urlpatterns = [
 
     # 사용자 추가 정보 입력
     path("region/", ChoiceRegion.as_view(), name='choiceregion.군구보여줌'),
-    # path("information/", AddUserInfo.as_view(), name="user_information"),
+    path("information/", AddUserInfo.as_view(), name="user_information"),
 
     # 사용자 내 정보 보기/수정
     path("mypage/", MyPage.as_view(), name="user_mypage"),

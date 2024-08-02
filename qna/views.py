@@ -41,9 +41,18 @@ class QnA(APIView):
             return Response(data=serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
     
-# class QuestionList(APIView):
-#     def get(self, request): # 해당 지역 질문글 리스트업
-#         user = ReturnUser(request=request)
+class QuestionList(APIView):
+    def get(self, request): # 해당 지역 질문글 리스트업
+        user = ReturnUser(request=request)
+
+        if user is None: # 해당 토큰으로 식별된 유저가 없는 경우
+            return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
+        
+        region_id = user.region_id.id # 해당 유저가 거주하는 지역 id
+        questions = Question.objects.filter(region_id=region_id) # 해당 지역의 질문글
+        serializer = QuestionSerializer(questions, many=True)
+
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
 
 
 class QuestionDetail(APIView):
