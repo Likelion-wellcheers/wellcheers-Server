@@ -1,5 +1,15 @@
 from django.shortcuts import redirect, render
 
+def ReturnUser(request): # 헤더에 입력된 토큰으로 유저를 반환하는 메소드
+    bearer_token = request.headers.get('Authorization') # 엑세스 토큰으로 사용자 식별
+    if bearer_token is None:
+        return Response({"error": "Authorization header missing."}, status=status.HTTP_401_UNAUTHORIZED)
+
+    token = bearer_token.split('Bearer ')[-1] # 토큰만 가져옴
+    user = User.get_user_or_none_by_token(token=token)
+
+    return user
+
 # Create your views here.
 
 from rest_framework_simplejwt.serializers import RefreshToken
@@ -212,9 +222,7 @@ class KakaoCallbackView(APIView): # 카카오 Callback
 
 class AddUserInfo(APIView):
     def put(self, request): # 사용자 추가정보 입력
-        user_email = request.data.get('email')
-        user = User.get_user_or_none_by_email(email=user_email) # 입력한 이메일로 사용자를 찾음
-
+        user = ReturnUser(request=request)
         if user is None: # 해당 이메일을 가진 유저가 없는 경우
             return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
 
@@ -248,12 +256,7 @@ class AddUserInfo(APIView):
     
 class MyPage(APIView):
     def get(self, request): # 사용자 내 정보 확인
-        bearer_token = request.headers.get('Authorization') # 엑세스 토큰으로 사용자 식별
-        if bearer_token is None:
-            return Response({"error": "Authorization header missing."}, status=status.HTTP_401_UNAUTHORIZED)
-
-        token = bearer_token.split('Bearer ')[-1] # 토큰만 가져옴
-        user = User.get_user_or_none_by_token(token=token)
+        user = ReturnUser(request=request)
 
         if user is None: # 해당 토큰으로 식별된 유저가 없는 경우
             return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
@@ -262,12 +265,7 @@ class MyPage(APIView):
         return Response(data=serializer.data, status=status.HTTP_200_OK)
     
     def put(self, request): # 사용자 내 정보 수정
-        bearer_token = request.headers.get('Authorization') # 엑세스 토큰으로 사용자 식별
-        if bearer_token is None:
-            return Response({"error": "Authorization header missing."}, status=status.HTTP_401_UNAUTHORIZED)
-
-        token = bearer_token.split('Bearer ')[-1] # 토큰만 가져옴
-        user = User.get_user_or_none_by_token(token=token)
+        user = ReturnUser(request=request)
 
         if user is None: # 해당 토큰으로 식별된 유저가 없는 경우
             return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
@@ -280,12 +278,7 @@ class MyPage(APIView):
 
 class MyPageRegionReview(APIView):
     def get(self, request): # 해당 사용자가 작성한 지역 후기 리스트업
-        bearer_token = request.headers.get('Authorization') # 엑세스 토큰으로 사용자 식별
-        if bearer_token is None:
-            return Response({"error": "Authorization header missing."}, status=status.HTTP_401_UNAUTHORIZED)
-
-        token = bearer_token.split('Bearer ')[-1] # 토큰만 가져옴
-        user = User.get_user_or_none_by_token(token=token)
+        user = ReturnUser(request=request)
 
         if user is None: # 해당 토큰으로 식별된 유저가 없는 경우
             return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
@@ -297,12 +290,7 @@ class MyPageRegionReview(APIView):
 
 class MyPageCenterReview(APIView):
     def get(self, request): # 해당 사용자가 작성한 시설 후기 리스트업
-        bearer_token = request.headers.get('Authorization') # 엑세스 토큰으로 사용자 식별
-        if bearer_token is None:
-            return Response({"error": "Authorization header missing."}, status=status.HTTP_401_UNAUTHORIZED)
-
-        token = bearer_token.split('Bearer ')[-1] # 토큰만 가져옴
-        user = User.get_user_or_none_by_token(token=token)
+        user = ReturnUser(request=request)
 
         if user is None: # 해당 토큰으로 식별된 유저가 없는 경우
             return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
@@ -314,12 +302,7 @@ class MyPageCenterReview(APIView):
 
 class MyPageLike(APIView):
     def get(self, request): # 해당 사용자가 저장한 시설(지역으로 묶어서) 리스트업
-        bearer_token = request.headers.get('Authorization') # 엑세스 토큰으로 사용자 식별
-        if bearer_token is None:
-            return Response({"error": "Authorization header missing."}, status=status.HTTP_401_UNAUTHORIZED)
-
-        token = bearer_token.split('Bearer ')[-1] # 토큰만 가져옴
-        user = User.get_user_or_none_by_token(token=token)
+        user = ReturnUser(request=request)
 
         if user is None: # 해당 토큰으로 식별된 유저가 없는 경우
             return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
@@ -343,13 +326,8 @@ class MyPageLike(APIView):
 
 class MyPagePlan(APIView):
     def get(self, request): # 해당 사용자가 작성한 계획 리스트업
-        bearer_token = request.headers.get('Authorization') # 엑세스 토큰으로 사용자 식별
-        if bearer_token is None:
-            return Response({"error": "Authorization header missing."}, status=status.HTTP_401_UNAUTHORIZED)
-
-        token = bearer_token.split('Bearer ')[-1] # 토큰만 가져옴
-        user = User.get_user_or_none_by_token(token=token)
-
+        user = ReturnUser(request=request)
+        
         if user is None: # 해당 토큰으로 식별된 유저가 없는 경우
             return Response({"error": "User not found."}, status=status.HTTP_404_NOT_FOUND)
         
