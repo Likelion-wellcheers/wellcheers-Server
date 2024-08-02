@@ -74,3 +74,9 @@ class CenterReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = CenterReview
         fields = ['center_id', 'user_id', 'content']
+
+class ReportSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Report
+        fields = ['user_id', 'region_id', 'plan1', 'plan2', 'plan3']
