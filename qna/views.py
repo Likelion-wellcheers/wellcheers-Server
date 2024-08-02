@@ -4,6 +4,8 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
+from accounts.views import ReturnUser
+
 from house.models import Region
 from accounts.models import User
 from .models import Question, Answer
@@ -20,12 +22,7 @@ class QnA(APIView):
                 return Response({"error": "시와 군,구를 모두 선택해주세요."}, status=status.HTTP_400_BAD_REQUEST)
 
         region = get_object_or_404(Region, city=city, gugoon=gugoon)
-        bearer_token = request.headers.get('Authorization') # 엑세스 토큰으로 사용자 식별
-        if bearer_token is None:
-            return Response({"error": "Authorization header missing."}, status=status.HTTP_401_UNAUTHORIZED)
-
-        token = bearer_token.split('Bearer ')[-1] # 토큰만 가져옴
-        user = User.get_user_or_none_by_token(token=token)
+        user = ReturnUser(request=request)
 
         data = {
             'q_user_id': user.id,
@@ -61,12 +58,7 @@ class QuestionDetail(APIView):
     
     def post(self, request, q_id): # 각 질문글에 답변하기
         
-        bearer_token = request.headers.get('Authorization') # 엑세스 토큰으로 사용자 식별
-        if bearer_token is None:
-            return Response({"error": "Authorization header missing."}, status=status.HTTP_401_UNAUTHORIZED)
-
-        token = bearer_token.split('Bearer ')[-1] # 토큰만 가져옴
-        user = User.get_user_or_none_by_token(token=token)
+        user = ReturnUser(request=request)
 
         data = { # 'q_id', 'a_user_id', 'content'
             'q_id' : q_id,
@@ -83,12 +75,7 @@ class QuestionDetail(APIView):
     
 class MyQuestion(APIView):
     def get(self, request): # 내가 작성한 질문 리스트업
-        bearer_token = request.headers.get('Authorization') # 엑세스 토큰으로 사용자 식별
-        if bearer_token is None:
-            return Response({"error": "Authorization header missing."}, status=status.HTTP_401_UNAUTHORIZED)
-
-        token = bearer_token.split('Bearer ')[-1] # 토큰만 가져옴
-        user = User.get_user_or_none_by_token(token=token)
+        user = ReturnUser(request=request)
         user_id = user.id
 
         questions = Question.objects.filter(q_user_id=user_id) # 해당 유저가 작성한 질문글
@@ -98,12 +85,7 @@ class MyQuestion(APIView):
 
 class MyAnswer(APIView):
     def get(self, request): # 내가 답변한 질문 리스트업
-        bearer_token = request.headers.get('Authorization') # 엑세스 토큰으로 사용자 식별
-        if bearer_token is None:
-            return Response({"error": "Authorization header missing."}, status=status.HTTP_401_UNAUTHORIZED)
-
-        token = bearer_token.split('Bearer ')[-1] # 토큰만 가져옴
-        user = User.get_user_or_none_by_token(token=token)
+        user = ReturnUser(request=request)
         user_id = user.id
 
         answers = Answer.objects.filter(a_user_id=user_id) # 해당 유저의 답변들

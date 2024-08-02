@@ -10,6 +10,8 @@ from rest_framework.views import status
 from rest_framework import status
 from django.http import Http404
 
+from accounts.views import ReturnUser
+
 from accounts.models import User
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from .permissions import IsWriterOrReadOnly
@@ -123,13 +125,7 @@ class CenterView(APIView):
         return Response(serializer.data)
 
     def put(self, request, id): # 특정 시설 하나 저장 또는 저장 취소
-        bearer_token = request.headers.get('Authorization') # 엑세스 토큰으로 사용자 식별
-        if bearer_token is None:
-            return Response({"error": "Authorization header missing."}, status=status.HTTP_401_UNAUTHORIZED)
-
-        token = bearer_token.split('Bearer ')[-1] # 토큰만 가져옴
-        user = User.get_user_or_none_by_token(token=token)
-
+        user = ReturnUser(request=request)
         center = get_object_or_404(Center, id=id)
 
         is_like = request.data.get('like') # 저장 눌렀으면 1, 안 눌렀으면 0
@@ -244,12 +240,7 @@ class MyReport(APIView):
         
 class ReportWrite(APIView):
     def post(self, request):
-        bearer_token = request.headers.get('Authorization') # 엑세스 토큰으로 사용자 식별
-        if bearer_token is None:
-            return Response({"error": "Authorization header missing."}, status=status.HTTP_401_UNAUTHORIZED)
-
-        token = bearer_token.split('Bearer ')[-1] # 토큰만 가져옴
-        user = User.get_user_or_none_by_token(token=token)
+        user = ReturnUser(request=request)
         if user is None: # 해당 토큰으로 식별된 유저가 없는 경우
             return Response({"error": "User 가 없습니다. 글쓰기 불가."}, status=status.HTTP_404_NOT_FOUND)
         
@@ -276,13 +267,7 @@ class ReportWrite(APIView):
 
 class CenterReviewView(APIView):
     def post(self, request, id): # 해당 시설 후기 작성
-        
-        bearer_token = request.headers.get('Authorization') # 엑세스 토큰으로 사용자 식별
-        if bearer_token is None:
-            return Response({"error": "Authorization header missing."}, status=status.HTTP_401_UNAUTHORIZED)
-
-        token = bearer_token.split('Bearer ')[-1] # 토큰만 가져옴
-        user = User.get_user_or_none_by_token(token=token)
+        user = ReturnUser(request=request)
 
         data = {
             'center_id': id,

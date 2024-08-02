@@ -10,6 +10,8 @@ from rest_framework.views import status
 from rest_framework import status
 from django.http import Http404
 
+from accounts.views import ReturnUser
+
 from accounts.models import User
 from house.permissions import IsWriterOrReadOnly
 from .models import Article , Magazine, Review
@@ -21,10 +23,10 @@ from rest_framework.decorators import permission_classes
 
 
 class AtriclePost(APIView):
-        def get(self, request, format=None):
-            articles=Article.objects.all()
-            serializers=ArticleSerializer(articles, many=True)
-            return Response(serializers.data)
+    def get(self, request, format=None):
+        articles=Article.objects.all()
+        serializers=ArticleSerializer(articles, many=True)
+        return Response(serializers.data)
         
 class ChoiceRegion(APIView):
     def post(self, request):
@@ -100,12 +102,7 @@ class MagOne(APIView):
 
 class Regionreview(APIView): # 사용자가 쓰고 , 삭제하고, 리스트로 보는 용 함수
     def post(self, request, id):
-        bearer_token = request.headers.get('Authorization') # 엑세스 토큰으로 사용자 식별
-        if bearer_token is None:
-            return Response({"error": "Authorization header missing."}, status=status.HTTP_401_UNAUTHORIZED)
-
-        token = bearer_token.split('Bearer ')[-1] # 토큰만 가져옴
-        user = User.get_user_or_none_by_token(token=token)
+        user = ReturnUser(request=request)
         if user is None: # 해당 토큰으로 식별된 유저가 없는 경우
             return Response({"error": "User 가 없습니다. 글쓰기 불가."}, status=status.HTTP_404_NOT_FOUND)
 
