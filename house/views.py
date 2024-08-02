@@ -15,9 +15,10 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from .permissions import IsWriterOrReadOnly
 
 from .models import Region, Center, CenterReview, Cart, User, Report
+from .models import Infra, Hobby, Lifestyle
 
 from .serializers import RegionSerializer, CenterSerializer, CartSerializer, CartcostSerializer
-from .serializers import FilterSerializer, CenterReviewSerializer
+from .serializers import FilterSerializer, CenterReviewSerializer, LifestyleSerializer, HobbySerializer, InfraSerializer
 
 class Recommend(APIView):
 
@@ -57,6 +58,23 @@ class Recommend(APIView):
 
             return Response(region_serializer.data, status=status.HTTP_200_OK)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def get(self, request):
+        infra_list = Infra.objects.all()
+        hobby_list = Hobby.objects.all()
+        lifestyle_list = Lifestyle.objects.all()
+        
+        infra_serializer = InfraSerializer(infra_list, many=True)
+        hobby_serializer = HobbySerializer(hobby_list, many=True)
+        lifestyle_serializer = LifestyleSerializer(lifestyle_list, many=True)
+        
+        combined_data = {
+            'infra': infra_serializer.data,
+            'hobby': hobby_serializer.data,
+            'lifestyle': lifestyle_serializer.data
+        }
+        
+        return Response(combined_data, status=status.HTTP_200_OK)
 
     # def post(self, request):
     #     serializer = FilterSerializer(data=request.data)
