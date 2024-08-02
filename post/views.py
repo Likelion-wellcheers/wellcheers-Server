@@ -150,8 +150,5 @@ class Regionreviewlook(APIView): #개별로 후기보는거 함수
     def delete(self, request, id):
         region_review = get_object_or_404(Review, id=id)  # 리뷰 불러오기
         self.check_object_permissions(self.request, region_review) # 해당 객체 permission 체크
-        print('삭제')
-        # region_review.delete()
+        region_review.delete()
         return Response({"success": "지역 리뷰가 삭제되었습니다."}, status=status.HTTP_204_NO_CONTENT)
-          
-# Create your views here.
