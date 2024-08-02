@@ -45,7 +45,7 @@ class ChoiceRegion(APIView):
             "city":city,
             "gugoon": list(gugoon),
             #"goon": list(goon),
-            "city_codes": citycodes # 걸러진 region 의 city_code 값과 해당되는 구군 이름도 따로 보내줌.
+            "city_codes": citycodes # 걸러진 region 의 city_code 값과 해당되는 구군 이름도 따로 보내줌
         }, status=status.HTTP_200_OK)
     
 class WellfareByRegionView(APIView):
