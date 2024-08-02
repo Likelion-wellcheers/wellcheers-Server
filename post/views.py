@@ -11,6 +11,7 @@ from rest_framework import status
 from django.http import Http404
 
 from accounts.models import User
+from house.permissions import IsWriterOrReadOnly
 from .models import Article , Magazine, Review
 from .serializers import ArticleSerializer,MagazineSerializer, ReviewSerializer
 from house.models import Region
@@ -138,26 +139,19 @@ class Regionreview(APIView): # 사용자가 쓰고 , 삭제하고, 리스트로 
         return Response(reviews.data)
 
 class Regionreviewlook(APIView): #개별로 후기보는거 함수
-     def get(self,request, id):
+    permission_classes = [IsWriterOrReadOnly]
+    
+    def get(self,request, id):
           
-          review=get_object_or_404(Review, id=id)
-          Reviewserializer=ReviewSerializer(review)
-          return Response(Reviewserializer.data)
-     
-     
-    #  @permission_classes([IsAuthenticated])
-     def delete(self, request, id):
-        # token = request.data.get('access_token')  # 엑세스 토큰으로 사용자 식별
-        # user = User.get_user_or_none_by_token(token=token)
-        # if user is None:  # 해당 토큰으로 식별된 유저가 없는 경우
-        #     return Response({"error": "User가 없습니다. 삭제 불가."}, status=status.HTTP_404_NOT_FOUND)
-
-        review = get_object_or_404(Review, id=id)  # 리뷰 불러오기
-        user=request.user
-        print(f"Review user_id: {review.user_id}, Current user id: {user.id}")
-        if review.user_id != user.id:  # 리뷰의 작성자와 현재 사용자 비교
-            return Response({"error": "삭제 권한이 없습니다."}, status=status.HTTP_403_FORBIDDEN)
-        review.delete()
-        return Response({"success": "리뷰가 삭제되었습니다."}, status=status.HTTP_204_NO_CONTENT)
+        review=get_object_or_404(Review, id=id)
+        Reviewserializer=ReviewSerializer(review)
+        return Response(Reviewserializer.data)
+    
+    def delete(self, request, id):
+        region_review = get_object_or_404(Review, id=id)  # 리뷰 불러오기
+        self.check_object_permissions(self.request, region_review) # 해당 객체 permission 체크
+        print('삭제')
+        # region_review.delete()
+        return Response({"success": "지역 리뷰가 삭제되었습니다."}, status=status.HTTP_204_NO_CONTENT)
           
 # Create your views here.
