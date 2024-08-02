@@ -13,6 +13,11 @@ urlpatterns = [
     path("login/", AuthView.as_view()), # 로그인
     path("logout/", LogoutView.as_view()), # 로그아웃
 
+    # 토큰
+    path("token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("token/refresh/", TokenRefreshView.as_view(), name="token_refresh"), # refresh token을 입력하면 access token을 반환
+    path("token/verify/", TokenVerifyView.as_view(), name="token_verify"),
+
     # 카카오 소셜 로그인
     path("kakao/login/", KakoLoginView.as_view(), name="kakao_login"),
     path("kakao/callback/", KakaoCallbackView.as_view(), name="kakao_callback"),

@@ -11,6 +11,8 @@ from rest_framework import status
 from django.http import Http404
 
 from accounts.models import User
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from .permissions import IsWriterOrReadOnly
 
 from .models import Region, Center, CenterReview, Cart, User, Report
 from .models import Infra, Hobby, Lifestyle
@@ -121,9 +123,14 @@ class CenterView(APIView):
         return Response(serializer.data)
 
     def put(self, request, id): # 특정 시설 하나 저장 또는 저장 취소
-        center = get_object_or_404(Center, id=id)
-        token = request.data.get('access_token') # 엑세스 토큰으로 사용자 식별
+        bearer_token = request.headers.get('Authorization') # 엑세스 토큰으로 사용자 식별
+        if bearer_token is None:
+            return Response({"error": "Authorization header missing."}, status=status.HTTP_401_UNAUTHORIZED)
+
+        token = bearer_token.split('Bearer ')[-1] # 토큰만 가져옴
         user = User.get_user_or_none_by_token(token=token)
+
+        center = get_object_or_404(Center, id=id)
 
         is_like = request.data.get('like') # 저장 눌렀으면 1, 안 눌렀으면 0
         if is_like: # 해당 시설을 저장
@@ -237,7 +244,11 @@ class MyReport(APIView):
         
 class ReportWrite(APIView):
     def post(self, request):
-        token = request.data.get('access_token') # 엑세스 토큰으로 사용자 식별
+        bearer_token = request.headers.get('Authorization') # 엑세스 토큰으로 사용자 식별
+        if bearer_token is None:
+            return Response({"error": "Authorization header missing."}, status=status.HTTP_401_UNAUTHORIZED)
+
+        token = bearer_token.split('Bearer ')[-1] # 토큰만 가져옴
         user = User.get_user_or_none_by_token(token=token)
         if user is None: # 해당 토큰으로 식별된 유저가 없는 경우
             return Response({"error": "User 가 없습니다. 글쓰기 불가."}, status=status.HTTP_404_NOT_FOUND)
@@ -264,7 +275,11 @@ class ReportWrite(APIView):
 class CenterReviewView(APIView):
     def post(self, request, id): # 해당 시설 후기 작성
         
-        token = request.data.get('access_token') # 엑세스 토큰으로 사용자 식별
+        bearer_token = request.headers.get('Authorization') # 엑세스 토큰으로 사용자 식별
+        if bearer_token is None:
+            return Response({"error": "Authorization header missing."}, status=status.HTTP_401_UNAUTHORIZED)
+
+        token = bearer_token.split('Bearer ')[-1] # 토큰만 가져옴
         user = User.get_user_or_none_by_token(token=token)
 
         data = {
@@ -286,3 +301,27 @@ class CenterReviewView(APIView):
         serializer = CenterReviewSerializer(center_reviews, many=True)
 
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+class CenterReviewLookView(APIView):
+    permission_classes = [IsWriterOrReadOnly]
+    
+    def get(self, request, id): # 시설 후기 개별 보기
+        center_review = get_object_or_404(CenterReview, id=id)
+        data = {
+            'center_id': center_review.center_id.id,
+            'user_id': center_review.user_id.id,
+            'content': center_review.content
+        }
+
+        serializer = CenterReviewSerializer(data=data)
+
+        if serializer.is_valid():
+            serializer.save()
+            return Response(data=serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    def delete(self, request, id): # 시설 후기 삭제
+        center_review = get_object_or_404(CenterReview, id=id)
+        self.check_object_permissions(self.request, center_review) # 해당 객체 permission 체크
+        center_review.delete()
+        return Response({"success": "시설 리뷰가 삭제되었습니다."}, status=status.HTTP_204_NO_CONTENT)
