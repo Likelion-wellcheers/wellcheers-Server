@@ -26,5 +26,9 @@ urlpatterns = [
     path("information/", AddUserInfo.as_view(), name="user_information"),
 
     # 사용자 내 정보 보기/수정
-    path("mypage/", MyPage.as_view(), name="user_mypage")
+    path("mypage/", MyPage.as_view(), name="user_mypage"),
+    # path("mypage/plan/", MyPage.as_view(), name="user_mypage_plan"),
+    # path("mypage/like/", MyPage.as_view(), name="user_mypage_like"),
+    # path("mypage/regionreview/", MyPage.as_view(), name="user_mypage_regionreview"),
+    # path("mypage/centerreview/", MyPage.as_view(), name="user_mypage_centerreview"),
 ]
