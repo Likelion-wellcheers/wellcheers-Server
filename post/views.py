@@ -15,7 +15,7 @@ from accounts.views import ReturnUser
 from accounts.models import User
 from house.permissions import IsWriterOrReadOnly
 from .models import Article , Magazine, Review
-from .serializers import ArticleSerializer,MagazineSerializer, ReviewSerializer
+from .serializers import ArticleSerializer,MagazineSerializer, ReviewSerializer, MagOneSerializer
 from house.models import Region
 from house.serializers import RegionSerializer
 from rest_framework.permissions import IsAuthenticated
@@ -59,7 +59,7 @@ class WellfareByRegionView(APIView):
         region = get_object_or_404(Region, city_code=city_code)
 
         articles = Article.objects.filter(region_id=region.id)
-        article_serializer = MagazineSerializer(articles, many=True)
+        article_serializer = ArticleSerializer(articles, many=True)
 
         if not article_serializer.data:
             return Response({"message": "해당 지역에 복지정책 정보가 없습니다."}, status=status.HTTP_404_NOT_FOUND)
@@ -85,7 +85,7 @@ class MagazineByRegionView(APIView):
         region = get_object_or_404(Region, city_code=city_code)
 
         magazines = Magazine.objects.filter(region_id=region.id)
-        magazine_serializer = ArticleSerializer(magazines, many=True)
+        magazine_serializer = MagazineSerializer(magazines, many=True)
 
         if not magazine_serializer.data:
             return Response({"message": "해당 지역에 매거진 정보가 없습니다."}, status=status.HTTP_404_NOT_FOUND)
@@ -95,7 +95,7 @@ class MagazineByRegionView(APIView):
 class MagOne(APIView):
     def get(self, request, id):
         magazine=get_object_or_404(Magazine, id=id)
-        Mags=MagazineSerializer(magazine)
+        Mags=MagOneSerializer(magazine)
         return Response(Mags.data)
 
 class Regionreview(APIView): # 사용자가 쓰고 , 삭제하고, 리스트로 보는 용 함수
