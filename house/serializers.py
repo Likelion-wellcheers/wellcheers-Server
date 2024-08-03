@@ -18,9 +18,28 @@ class LifestyleSerializer(serializers.ModelSerializer):
         fields = ['id', 'name']
 
 class RegionSerializer(serializers.ModelSerializer):
+
+    lifename = serializers.SerializerMethodField()
+    hobbyname = serializers.SerializerMethodField()
+    infraname = serializers.SerializerMethodField()
+
     class Meta:
         model=Region
-        fields= "__all__"
+        fields = [
+            'id', 'lstyle_id', 'infra_id', 'hobby_id', 'city_code', 'city', 'gugoon',
+            'longtitude', 'latitude', 'thumbnail', 'lifename', 'hobbyname', 'infraname'
+        ]
+        #fields=[ 'id', 'lstyle_id', 'infra_id', 'hobby_id', 'city_code','city', 'gugoon', 'longtitude', 'latitude', 'thumbnail']
+    def get_lifename(self, obj):
+        return [lifestyle.name for lifestyle in obj.lstyle_id.all()]
+
+    def get_hobbyname(self, obj):
+        return [hobby.name for hobby in obj.hobby_id.all()]
+
+    def get_infraname(self, obj):
+        return [infra.name for infra in obj.infra_id.all()]
+
+
 
 class CenterSerializer(serializers.ModelSerializer):
 
