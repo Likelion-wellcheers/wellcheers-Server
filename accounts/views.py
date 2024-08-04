@@ -143,7 +143,7 @@ class KakaoCallbackView(APIView): # 카카오 Callback
         # code = data.get('code')
         code = request.data.get('code')
         print(code)
-        logging.log(code)
+        # logging.log(code)
         
         if not code:
             return Response(status=status.HTTP_400_BAD_REQUEST) # code가 없는 경우 잘못된 요청 응답 반환
