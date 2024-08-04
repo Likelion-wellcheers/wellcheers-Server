@@ -91,10 +91,18 @@ class FilterSerializer(serializers.Serializer):
     )
 
 class CenterReviewSerializer(serializers.ModelSerializer):
+    profileimage = serializers.SerializerMethodField()
+    nickname = serializers.SerializerMethodField()
 
     class Meta:
         model = CenterReview
-        fields = ['center_id', 'user_id', 'content']
+        fields = ['center_id', 'user_id', 'content','created_at','profileimage','nickname','score']
+
+    def get_profileimage(self, obj):
+        return obj.user_id.profileimage if obj.user_id.profileimage else None
+
+    def get_nickname(self, obj):
+        return obj.user_id.nickname if obj.user_id.nickname else None
 
 class ReportSerializer(serializers.ModelSerializer):
 
