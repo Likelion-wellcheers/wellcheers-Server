@@ -66,14 +66,18 @@ class Center (BaseModel):
     
 class Cart (BaseModel):
     id=models.AutoField(primary_key=True)
-    center1=models.ForeignKey(Center,related_name='cart_center1', on_delete=models.CASCADE,blank=True)
-    center2=models.ForeignKey(Center,related_name='cart_center2', on_delete=models.CASCADE,blank=True)
-    center3=models.ForeignKey(Center,related_name='cart_center3', on_delete=models.CASCADE,blank=True)
-    center4=models.ForeignKey(Center,related_name='cart_center4', on_delete=models.CASCADE,blank=True)
-    center5=models.ForeignKey(Center,related_name='cart_center5', on_delete=models.CASCADE,blank=True)
+    center1=models.ForeignKey(Center,related_name='cart_center1', on_delete=models.CASCADE,blank=True, null=True)
+    center2=models.ForeignKey(Center,related_name='cart_center2', on_delete=models.CASCADE,blank=True, null=True)
+    center3=models.ForeignKey(Center,related_name='cart_center3', on_delete=models.CASCADE,blank=True, null=True)
+    center4=models.ForeignKey(Center,related_name='cart_center4', on_delete=models.CASCADE,blank=True, null=True)
+    center5=models.ForeignKey(Center,related_name='cart_center5', on_delete=models.CASCADE,blank=True, null=True)
 
     def total_cost(self):
-        return 4*(self.center1.cost + self.center2.cost + self.center3.cost+self.center4.cost+self.center5.cost) #이용비용 계산 (한달 기준으로 계산해줌.)
+        centers = [self.center1, self.center2, self.center3, self.center4, self.center5]
+        total = sum(center.cost for center in centers if center is not None)
+        return 4 * total
+    # def total_cost(self):
+    #     return 4*(self.center1.cost + self.center2.cost + self.center3.cost+self.center4.cost+self.center5.cost) #이용비용 계산 (한달 기준으로 계산해줌.)
 
     def __str__(self):
         return f"Cart with facilities: {self.center1}, {self.center2}, {self.center3},{self.center4},{self.center5}"

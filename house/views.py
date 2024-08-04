@@ -180,25 +180,92 @@ class CenterView(APIView):
         return Response(data=data, status=status.HTTP_200_OK)
     
 class MyCartInsert(APIView):
-
     def post(self, request):
-
         center1_id = request.data.get('center1_id')
         center2_id = request.data.get('center2_id')
         center3_id = request.data.get('center3_id')
         center4_id = request.data.get('center4_id')
         center5_id = request.data.get('center5_id')
 
-        center1 = Center.objects.get(id=center1_id)
-        center2 = Center.objects.get(id=center2_id)
-        center3 = Center.objects.get(id=center3_id)
-        center4 = Center.objects.get(id=center4_id)
-        center5 = Center.objects.get(id=center5_id)
+        center1 = center2 = center3 = center4 = center5 = None
 
-        cart = Cart.objects.create(center1=center1, center2=center2, center3=center3, center4=center4, center5=center5)
+        if center1_id:
+            try:
+                center1 = Center.objects.get(id=center1_id)
+            except Center.DoesNotExist:
+                return Response({"error": f"Center with id {center1_id} does not exist."}, status=status.HTTP_404_NOT_FOUND)
+
+        if center2_id:
+            try:
+                center2 = Center.objects.get(id=center2_id)
+            except Center.DoesNotExist:
+                return Response({"error": f"Center with id {center2_id} does not exist."}, status=status.HTTP_404_NOT_FOUND)
+
+        if center3_id:
+            try:
+                center3 = Center.objects.get(id=center3_id)
+            except Center.DoesNotExist:
+                return Response({"error": f"Center with id {center3_id} does not exist."}, status=status.HTTP_404_NOT_FOUND)
+
+        if center4_id:
+            try:
+                center4 = Center.objects.get(id=center4_id)
+            except Center.DoesNotExist:
+                return Response({"error": f"Center with id {center4_id} does not exist."}, status=status.HTTP_404_NOT_FOUND)
+
+        if center5_id:
+            try:
+                center5 = Center.objects.get(id=center5_id)
+            except Center.DoesNotExist:
+                return Response({"error": f"Center with id {center5_id} does not exist."}, status=status.HTTP_404_NOT_FOUND)
+
+        # Cart 객체 생성
+        cart = Cart.objects.create(
+            center1=center1,
+            center2=center2,
+            center3=center3,
+            center4=center4,
+            center5=center5,
+        )
+        
         serializer = CartSerializer(cart)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    
+    # def post(self, request):
+        
+        # center1_id = request.data.get('center1_id')
+        # center2_id = request.data.get('center2_id')
+        # center3_id = request.data.get('center3_id')
+        # center4_id = request.data.get('center4_id')
+        # center5_id = request.data.get('center5_id')
 
-        return Response(serializer.data, status=status.HTTP_200_OK)
+        # if center1_id:
+        #     center1 = Center.objects.get(id=center1_id)
+        #     cart.center1 = center1
+
+        # if center2_id:
+        #     center2 = Center.objects.get(id=center2_id)
+        #     cart.center2 = center2
+
+        # if center3_id:
+        #     center3 = Center.objects.get(id=center3_id)
+        #     cart.center3 = center3
+
+        # if center4_id:
+        #     center4 = Center.objects.get(id=center4_id)
+        #     cart.center4 = center4
+
+        # if center5_id:
+        #     center5 = Center.objects.get(id=center5_id)
+        #     cart.center5 = center5
+
+        # cart.save()
+        # serializer = CartSerializer(cart)
+
+        # cart = Cart.objects.create(center1=center1, center2=center2, center3=center3, center4=center4, center5=center5)
+        # serializer = CartSerializer(cart)
+
+        # return Response(serializer.data, status=status.HTTP_200_OK)
 
 class MyCart(APIView):
     
