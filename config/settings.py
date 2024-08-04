@@ -184,12 +184,7 @@ CSRF_TRUSTED_ORIGINS = [
 
 CSRF_COOKIE_SECURE = True
 
-CORS_ALLOWED_ORIGINS = [ 
-    'https://youknowhoknow.netlify.app',
-    'https://youknowhoknow.netlify.app/',
-    "http://localhost:3000",
-    "http://127.0.0.1:3000",
-]
+CORS_ORIGIN_ALLOW_ALL = True
 
 CORS_ALLOW_METHODS = (
     'DELETE',
