@@ -177,6 +177,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 CORS_ALLOW_CREDENTIALS = True
 
 CSRF_TRUSTED_ORIGINS = [
+    'https://youknowhoknow.netlify.app',
     'https://wellcheers.p-e.kr',
     'https://www.wellcheers.p-e.kr',
 ]
