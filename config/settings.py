@@ -129,7 +129,7 @@ DATABASES = {
         # "PASSWORD": get_secret("DB_PASSWORD"),
         # "HOST" : get_secret("DB_HOST"),
         # "PORT" : "3306",
-        "ENGINE": "django.db.backends.mysql",
+        # "ENGINE": "django.db.backends.mysql",
         "NAME": "wellcheers",
         "USER": "root",
         "PASSWORD": get_secret("DB_PASSWORD"),

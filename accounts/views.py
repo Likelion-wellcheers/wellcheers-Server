@@ -192,7 +192,7 @@ class KakaoCallbackView(APIView): # 카카오 Callback
         # 사용자의 프로필 정보 받아옴
         user_profile = kakao_account.get('profile')
         user_name = user_profile.get('nickname')
-
+        user_profileimage_url = user_profile.get('profile_image_url')
 
         '''
         회원가입 및 로그인 처리 알고리즘
@@ -205,9 +205,15 @@ class KakaoCallbackView(APIView): # 카카오 Callback
             # 존재하지 않는 유저라면 회원가입 처리
             user = User.objects.create(
                 username = user_name,
-                email = user_email
+                email = user_email,
+                profileimage_url = user_profileimage_url
             )
             user.set_password("1234") # 임의의 값으로 비밀번호 설정
+            user.save()
+        else: # 바뀐 정보가 있다면 업데이트
+            user.username = user_name
+            user.email = user_email
+            user.profileimage_url = user_profileimage_url
             user.save()
 
         token = RefreshToken.for_user(user)

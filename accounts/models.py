@@ -18,6 +18,7 @@ class User(AbstractUser):
     pursue_lifestyle_id = models.ManyToManyField(PursueLifestyle, blank=True)
     like_center = models.ManyToManyField('house.Center', verbose_name="저장한 시설", blank=True)
     profileimage=models.ImageField(verbose_name='프로필사진', null=True, blank=True)
+    profileimage_url = models.URLField(verbose_name="프로필사진", blank=True, null=True)
 
     @staticmethod
     def get_user_or_none_by_username(username): # username값으로 해당 유저를 찾는 모델 내부 함수 

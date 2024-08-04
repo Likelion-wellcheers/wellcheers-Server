@@ -149,13 +149,21 @@ class CenterList(APIView): #해당되는 센터정보를 리스트로 보내줌.
      
 class CenterView(APIView):
     def get(self,request, id): # 특정 시설 개별 조회
+        user = ReturnUser(request=request)
         center=get_object_or_404(Center,id=id)
         serializer=CenterSerializer(center)
         #region=get_object_or_404(Region,id=center.region_id)
 
+        # 해당 유저가 이 시설을 저장했는지
+        is_like = 0 # 저장했으면 1, 저장 안했으면 0
+        if center in user.like_center.all(): is_like = 1
+
         if not serializer.data:
                 return Response({"message": "대상이 없습니다"}, status=status.HTTP_400_BAD_REQUEST)
-        return Response(serializer.data)
+        
+        data = serializer.data
+        data['is_like'] = is_like # 해당 유저가 이 시설을 저장했는지의 정보도 함께 반환
+        return Response(data=data, status=status.HTTP_200_OK)
 
     def put(self, request, id): # 특정 시설 하나 저장 또는 저장 취소
         user = ReturnUser(request=request)
