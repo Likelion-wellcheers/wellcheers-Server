@@ -62,11 +62,11 @@ class CenterSerializer(serializers.ModelSerializer):
 
 
 class CartSerializer(serializers.ModelSerializer):
-    center1 = CenterSerializer()
-    center2 = CenterSerializer()
-    center3 = CenterSerializer()
-    center4 = CenterSerializer()
-    center5 = CenterSerializer()
+    center1 = CenterSerializer(allow_null=True)
+    center2 = CenterSerializer(allow_null=True)
+    center3 = CenterSerializer(allow_null=True)
+    center4 = CenterSerializer(allow_null=True)
+    center5 = CenterSerializer(allow_null=True)
 
     class Meta:
         model = Cart
