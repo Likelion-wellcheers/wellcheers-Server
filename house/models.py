@@ -55,6 +55,7 @@ class Center (BaseModel):
     longtitude=models.DecimalField(verbose_name="겅도",max_digits=15, decimal_places=10, blank=True)
     latitude=models.DecimalField(verbose_name="위도",max_digits=15, decimal_places=10, blank= True)
     thumbnail = models.ImageField(null=True, blank=True, verbose_name="썸네일") #필로우 깔아줘서 이미지필드 사용가능
+    phonenum=models.CharField(null=True, blank=True, verbose_name="전화번호", max_length=15)
 
     def __str__(self):
         return f"{self.id} - {self.name}"
