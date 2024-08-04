@@ -48,7 +48,7 @@ class CenterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Center
-        fields = ['id', 'name', 'region_id', 'address', 'time', 'cost', 'longtitude', 'latitude', 'thumbnail', 'city','gugoon']
+        fields = ['id', 'name', 'region_id', 'address', 'time', 'cost', 'longtitude', 'latitude', 'thumbnail', 'city','gugoon', 'phonenum']
 
     def city(self, obj):
         return obj.city()
