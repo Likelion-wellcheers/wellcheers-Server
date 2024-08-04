@@ -83,6 +83,7 @@ class CenterReview(BaseModel):
     center_id=models.ForeignKey(Center, verbose_name="시설",on_delete=models.CASCADE)
     user_id=models.ForeignKey(User, verbose_name="작성자", on_delete=models.CASCADE, null=True)
     content=models.CharField(verbose_name="후기내용", max_length=150) #일단은 150자 이내로 쓰게함
+    score=models.IntegerField(verbose_name="별점",null=True, blank=True)
 
 class Report(BaseModel): #사용자 여가시설 리포트
     id=models.AutoField(primary_key=True)
