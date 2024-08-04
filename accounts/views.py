@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404, redirect, render
+import logging
 
 def ReturnUser(request): # 헤더에 입력된 토큰으로 유저를 반환하는 메소드
     bearer_token = request.headers.get('Authorization') # 엑세스 토큰으로 사용자 식별
@@ -105,7 +106,7 @@ def get_secret(setting, secrets=secrets):
         raise ImproperlyConfigured(error_msg)
 
 KAKAO_REST_API_KEY = get_secret("KAKAO_REST_API_KEY") # REST API를 호출할 때 사용함
-KAKAO_REDIRECT_URI = "https://youknowhoknow.netlify.app/kakaologin"
+KAKAO_REDIRECT_URI = "http://localhost:3000/kakaologin"
 KAKAO_CLIENT_SECRET_KEY = get_secret("KAKAO_CLIENT_SECRET_KEY") # admin키. 모든 권한을 가지고 있는 키. 노출이 되지 않도록 주의 필요
 KAKAO_LOGIN_URI = get_secret("KAKAO_LOGIN_URI") # 로그인 페이지 주소 -> 인가 코드 받기
 KAKAO_TOKEN_URI = get_secret("KAKAO_TOKEN_URI") # 액세스 토큰 발급받기 위한 주소
@@ -130,7 +131,7 @@ class KakoLoginView(APIView): # 카카오 로그인
         return res
 
 class KakaoCallbackView(APIView): # 카카오 Callback
-    parser_classes = (AllowAny,) # 모든 사용자 접근 허용
+    # parser_classes = (AllowAny,) # 모든 사용자 접근 허용
 
     def post(self, request): # 사용자가 oauth 로그인시 code 검증 및 로그인 처리
         '''
@@ -141,7 +142,9 @@ class KakaoCallbackView(APIView): # 카카오 Callback
         # access_token 발급 요청
         # code = data.get('code')
         code = request.data.get('code')
-        # print(code)
+        print(code)
+        # logging.log(code)
+        
         if not code:
             return Response(status=status.HTTP_400_BAD_REQUEST) # code가 없는 경우 잘못된 요청 응답 반환
         
