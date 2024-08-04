@@ -140,7 +140,7 @@ class KakaoCallbackView(APIView): # 카카오 Callback
 
         # access_token 발급 요청
         # code = data.get('code')
-        code = request.data.get('code')
+        code = request.POST.get('code')
         # print(code)
         if not code:
             return Response(status=status.HTTP_400_BAD_REQUEST) # code가 없는 경우 잘못된 요청 응답 반환
