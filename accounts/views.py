@@ -131,7 +131,7 @@ class KakoLoginView(APIView): # 카카오 로그인
         return res
 
 class KakaoCallbackView(APIView): # 카카오 Callback
-    parser_classes = (AllowAny,) # 모든 사용자 접근 허용
+    # parser_classes = (AllowAny,) # 모든 사용자 접근 허용
 
     def post(self, request): # 사용자가 oauth 로그인시 code 검증 및 로그인 처리
         '''
