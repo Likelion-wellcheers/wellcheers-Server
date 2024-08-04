@@ -105,7 +105,7 @@ def get_secret(setting, secrets=secrets):
         raise ImproperlyConfigured(error_msg)
 
 KAKAO_REST_API_KEY = get_secret("KAKAO_REST_API_KEY") # REST API를 호출할 때 사용함
-KAKAO_REDIRECT_URI = "http://localhost:8000/account/kakao/callback/"
+KAKAO_REDIRECT_URI = "https://youknowhoknow.netlify.app/account/kakao/callback/"
 KAKAO_CLIENT_SECRET_KEY = get_secret("KAKAO_CLIENT_SECRET_KEY") # admin키. 모든 권한을 가지고 있는 키. 노출이 되지 않도록 주의 필요
 KAKAO_LOGIN_URI = get_secret("KAKAO_LOGIN_URI") # 로그인 페이지 주소 -> 인가 코드 받기
 KAKAO_TOKEN_URI = get_secret("KAKAO_TOKEN_URI") # 액세스 토큰 발급받기 위한 주소
