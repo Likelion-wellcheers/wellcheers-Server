@@ -124,3 +124,11 @@ class MyAnswer(APIView):
         serializer = QuestionSerializer(question_list, many=True)
 
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+class QusetionListByRegion(APIView):
+    def get(self, request, city_code): # 지역에 달린 리뷰 리스트업
+        region = get_object_or_404(Region, city_code=city_code)
+        questions = Question.objects.filter(region_id=region.id)
+        serializer = QuestionSerializer(questions, many=True)
+
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
