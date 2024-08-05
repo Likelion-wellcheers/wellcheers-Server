@@ -44,6 +44,7 @@ class Region (BaseModel):
 
     def __str__(self):
         return f"{self.id} - {self.city}-{self.gugoon}"
+    
 
 class Center (BaseModel):
     id=models.AutoField(primary_key=True)
@@ -64,6 +65,11 @@ class Center (BaseModel):
         return self.region_id.city
     def gugoon(self):
         return self.region_id.gugoon
+    
+class CenterPhoto(models.Model):
+    id = models.AutoField(primary_key=True)
+    center = models.ForeignKey(Center, related_name='photos', on_delete=models.CASCADE, null=True, blank=True)
+    image=models.ImageField(verbose_name="센터이미지",blank=True)
     
 class Cart (BaseModel):
     id=models.AutoField(primary_key=True)
