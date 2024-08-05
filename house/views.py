@@ -389,7 +389,10 @@ class CenterReviewView(APIView):
         data = {
             'center_id': id,
             'user_id': user.id,
-            'content': request.data.get('content')
+            'nickname': user.nickname,
+            'content': request.data.get('content'),
+            'profileimage': request.data.get('profileimage', ""),
+            'score': request.data.get('score')
         }
 
         serializer = CenterReviewSerializer(data=data)
