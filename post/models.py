@@ -33,7 +33,7 @@ class Review(BaseModel): # 지역후기 모델입니다. 텍스트 비워둘 수
     region_id = models.ForeignKey(Region, verbose_name="지역", on_delete=models.CASCADE)
     content=models.TextField(verbose_name="내용")
     score=models.IntegerField(verbose_name="별점")
-    image=models.ImageField(verbose_name="이미지", blank=True)
+    image=models.ImageField(verbose_name="이미지", blank=True, null=True)
 
     def city(self):
         return self.region_id.city
