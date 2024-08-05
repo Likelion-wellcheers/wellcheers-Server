@@ -357,8 +357,8 @@ class ReportWrite(APIView):
         plan2 = request.data.get('plan2')
         plan3 = request.data.get('plan3')
 
-        if not plan1 or not plan2 or not plan3:
-            return JsonResponse({"error": "모든 계획을 입력해야 합니다."}, status=400)
+        # if not plan1 or not plan2 or not plan3:
+        #     return JsonResponse({"error": "모든 계획을 입력해야 합니다."}, status=400)
         
         city_code = request.data.get("city_code")
         if not city_code:
