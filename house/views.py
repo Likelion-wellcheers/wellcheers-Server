@@ -289,25 +289,20 @@ class MyCart(APIView):
         center4_id = request.data.get('center4_id')
         center5_id = request.data.get('center5_id')
 
-        if center1_id:
-            center1 = Center.objects.get(id=center1_id)
-            cart.center1 = center1
+        if center1_id and cart.center1 and cart.center1.id == center1_id:
+            cart.center1 = None
 
-        if center2_id:
-            center2 = Center.objects.get(id=center2_id)
-            cart.center2 = center2
+        if center2_id and cart.center2 and cart.center2.id == center2_id:
+            cart.center2 = None
 
-        if center3_id:
-            center3 = Center.objects.get(id=center3_id)
-            cart.center3 = center3
+        if center3_id and cart.center3 and cart.center3.id == center3_id:
+            cart.center3 = None
 
-        if center4_id:
-            center4 = Center.objects.get(id=center4_id)
-            cart.center4 = center4
+        if center4_id and cart.center4 and cart.center4.id == center4_id:
+            cart.center4 = None
 
-        if center5_id:
-            center5 = Center.objects.get(id=center5_id)
-            cart.center5 = center5
+        if center5_id and cart.center5 and cart.center5.id == center5_id:
+            cart.center5 = None
 
         cart.save()
         serializer = CartSerializer(cart)
