@@ -62,7 +62,7 @@ class WellfareByRegionView(APIView):
         article_serializer = ArticleSerializer(articles, many=True)
 
         if not article_serializer.data:
-            return Response({"message": "해당 지역에 복지정책 정보가 없습니다."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"message": "해당 지역에 복지정책 정보가 없습니다."})
 
         return Response(article_serializer.data, status=status.HTTP_200_OK)
 
@@ -88,7 +88,7 @@ class MagazineByRegionView(APIView):
         magazine_serializer = MagazineSerializer(magazines, many=True)
 
         if not magazine_serializer.data:
-            return Response({"message": "해당 지역에 매거진 정보가 없습니다."}, status=status.HTTP_404_NOT_FOUND)
+            return Response({"message": "해당 지역에 매거진 정보가 없습니다."})
 
         return Response(magazine_serializer.data, status=status.HTTP_200_OK)
     
