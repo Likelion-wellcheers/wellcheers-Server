@@ -283,26 +283,24 @@ class MyCart(APIView):
         except Cart.DoesNotExist:
             return Response({"error": "Cart not found"}, status=status.HTTP_404_NOT_FOUND)
         
-        center1_id = request.data.get('center1_id')
-        center2_id = request.data.get('center2_id')
-        center3_id = request.data.get('center3_id')
-        center4_id = request.data.get('center4_id')
-        center5_id = request.data.get('center5_id')
+        delete_center = request.data.get('delete_center')
+        if delete_center is not None:
+            delete_center = int(delete_center)
 
-        if center1_id and cart.center1 and cart.center1.id == center1_id:
-            cart.center1 = None
+            if delete_center == 1 and cart.center1:
+                cart.center1 = None
 
-        if center2_id and cart.center2 and cart.center2.id == center2_id:
-            cart.center2 = None
+            if delete_center == 2 and cart.center2:
+                cart.center2 = None
 
-        if center3_id and cart.center3 and cart.center3.id == center3_id:
-            cart.center3 = None
+            if delete_center == 3 and cart.center3:
+                cart.center3 = None
 
-        if center4_id and cart.center4 and cart.center4.id == center4_id:
-            cart.center4 = None
+            if delete_center == 4 and cart.center4:
+                cart.center4 = None
 
-        if center5_id and cart.center5 and cart.center5.id == center5_id:
-            cart.center5 = None
+            if delete_center == 5 and cart.center5:
+                cart.center5 = None
 
         cart.save()
         serializer = CartSerializer(cart)
