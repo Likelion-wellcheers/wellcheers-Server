@@ -23,3 +23,4 @@ class Answer(BaseModel):
     q_id = models.ForeignKey(Question, verbose_name="질문글", on_delete=models.CASCADE)
     a_user_id = models.ForeignKey(User, verbose_name="답변자", on_delete=models.CASCADE)
     content = models.TextField(verbose_name="내용",  blank=True)
+    image = models.ImageField(verbose_name="이미지", null=True, blank=True)

@@ -72,7 +72,8 @@ class QuestionDetail(APIView):
         data = { # 'q_id', 'a_user_id', 'content'
             'q_id' : q_id,
             'a_user_id' : user.id,
-            'content' : request.data.get('content')
+            'content' : request.data.get('content'),
+            'image': request.data.get('image')
         }
 
         serializer = AnswerSerializer(data=data)
