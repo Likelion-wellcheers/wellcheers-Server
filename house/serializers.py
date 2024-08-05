@@ -62,6 +62,7 @@ class CenterSerializer(serializers.ModelSerializer):
 
 
 class CartSerializer(serializers.ModelSerializer):
+
     center1 = CenterSerializer(allow_null=True, required = False)
     center2 = CenterSerializer(allow_null=True, required = False)
     center3 = CenterSerializer(allow_null=True, required = False)
