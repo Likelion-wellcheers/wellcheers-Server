@@ -106,7 +106,7 @@ def get_secret(setting, secrets=secrets):
         raise ImproperlyConfigured(error_msg)
 
 KAKAO_REST_API_KEY = get_secret("KAKAO_REST_API_KEY") # REST API를 호출할 때 사용함
-KAKAO_REDIRECT_URI = "http://localhost:3000/kakaologin"
+KAKAO_REDIRECT_URI = "https://youknowhoknow.netlify.app/kakaologin"
 KAKAO_CLIENT_SECRET_KEY = get_secret("KAKAO_CLIENT_SECRET_KEY") # admin키. 모든 권한을 가지고 있는 키. 노출이 되지 않도록 주의 필요
 KAKAO_LOGIN_URI = get_secret("KAKAO_LOGIN_URI") # 로그인 페이지 주소 -> 인가 코드 받기
 KAKAO_TOKEN_URI = get_secret("KAKAO_TOKEN_URI") # 액세스 토큰 발급받기 위한 주소
@@ -213,13 +213,13 @@ class KakaoCallbackView(APIView): # 카카오 Callback
             )
             user.set_password("1234") # 임의의 값으로 비밀번호 설정
             user.save()
-            is_new_user = True # 새로 생긴 유저
+            is_new_user = True # 새로 가입한 유저
         else: # 바뀐 정보가 있다면 업데이트
             user.username = user_name
             user.email = user_email
             user.profileimage_url = user_profileimage_url
             user.save()
-            is_new_user = False
+            is_new_user = False # 기존 유저
 
         token = RefreshToken.for_user(user)
         internal_refresh_token = str(token) # 내부 refresh token 반환
