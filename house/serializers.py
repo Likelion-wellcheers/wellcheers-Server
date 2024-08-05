@@ -1,6 +1,6 @@
 from rest_framework import serializers
 from django.conf import settings
-from .models import Infra, Hobby, Lifestyle, Region ,Center, CenterReview, Cart, Report
+from .models import Infra, Hobby, Lifestyle, Region ,Center, CenterReview, Cart, Report, CenterPhoto
 
 class InfraSerializer(serializers.ModelSerializer):
     class Meta:
@@ -39,16 +39,19 @@ class RegionSerializer(serializers.ModelSerializer):
     def get_infraname(self, obj):
         return [infra.name for infra in obj.infra_id.all()]
 
-
+class MagPhotoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=CenterPhoto
+        fields = ['image']
 
 class CenterSerializer(serializers.ModelSerializer):
-
+    photos = MagPhotoSerializer(many=True, read_only=True)
     city = serializers.SerializerMethodField()
     gugoon = serializers.SerializerMethodField()
 
     class Meta:
         model = Center
-        fields = ['id', 'name', 'region_id', 'address', 'time', 'cost', 'longtitude', 'latitude', 'thumbnail', 'city','gugoon', 'phonenum']
+        fields = ['id', 'name', 'region_id', 'address', 'time', 'cost', 'longtitude', 'latitude', 'thumbnail', 'city','gugoon', 'phonenum', 'photos']
 
     def city(self, obj):
         return obj.city()
@@ -59,7 +62,6 @@ class CenterSerializer(serializers.ModelSerializer):
     # class Meta:
     #     model=Center
     #     fields="__all__"
-
 
 class CartSerializer(serializers.ModelSerializer):
 
