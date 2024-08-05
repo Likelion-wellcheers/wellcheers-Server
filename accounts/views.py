@@ -213,11 +213,13 @@ class KakaoCallbackView(APIView): # 카카오 Callback
             )
             user.set_password("1234") # 임의의 값으로 비밀번호 설정
             user.save()
+            is_new_user = True # 새로 생긴 유저
         else: # 바뀐 정보가 있다면 업데이트
             user.username = user_name
             user.email = user_email
             user.profileimage_url = user_profileimage_url
             user.save()
+            is_new_user = False
 
         token = RefreshToken.for_user(user)
         internal_refresh_token = str(token) # 내부 refresh token 반환
@@ -226,7 +228,8 @@ class KakaoCallbackView(APIView): # 카카오 Callback
         # 반환 값
         res = {
             'internal_access_token': internal_access_token,
-            'internal_refresh_token': internal_refresh_token
+            'internal_refresh_token': internal_refresh_token,
+            'is_new_user': is_new_user
         }
         response = Response(data=res, status=status.HTTP_200_OK)
         return response
