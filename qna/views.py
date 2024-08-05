@@ -94,6 +94,13 @@ class QuestionDetail(APIView):
         serializer = QuestionSerializer(qna)
 
         return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+class AnswerList(APIView):
+    def get(self, request, q_id): # 해당 궁금증에 달린 답변들 리스트업
+        answers = Answer.objects.filter(q_id=q_id) # 해당 궁금증에 달린 답변들
+        serializer = AnswerSerializer(answers, many=True)
+
+        return Response(data=serializer.data, status=status.HTTP_200_OK)
     
 class MyQuestion(APIView):
     def get(self, request): # 내가 작성한 질문 리스트업
