@@ -357,8 +357,8 @@ class ReportWrite(APIView):
         plan2 = request.data.get('plan2')
         plan3 = request.data.get('plan3')
 
-        if not plan1 or not plan2 or not plan3:
-            return JsonResponse({"error": "모든 계획을 입력해야 합니다."}, status=400)
+        # if not plan1 or not plan2 or not plan3:
+        #     return JsonResponse({"error": "모든 계획을 입력해야 합니다."}, status=400)
         
         city_code = request.data.get("city_code")
         if not city_code:
@@ -373,11 +373,13 @@ class ReportWrite(APIView):
             'plan2': plan2,
             'plan3': plan3
         }
+
         serializer = ReportSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
-            return Response(data=serializer.data, status=status.HTTP_200_OK)
-        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class CenterReviewView(APIView):
