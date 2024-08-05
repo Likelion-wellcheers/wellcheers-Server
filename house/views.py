@@ -389,8 +389,8 @@ class CenterReviewView(APIView):
             'user_id': user.id,
             'nickname': user.nickname,
             'content': request.data.get('content'),
-            'profileimage': request.data.get('profileimage', ""),
-            'score': request.data.get('score')
+            'score': request.data.get('score'),
+            'thumbnail': request.data.get('thumbnail')
         }
 
         serializer = CenterReviewSerializer(data=data)
@@ -415,7 +415,9 @@ class CenterReviewLookView(APIView):
         data = {
             'center_id': center_review.center_id.id,
             'user_id': center_review.user_id.id,
-            'content': center_review.content
+            'content': center_review.content,
+            'score': request.data.get('score'),
+            'thumbnail': request.data.get('thumbnail')
         }
 
         serializer = CenterReviewSerializer(data=data)

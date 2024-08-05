@@ -31,12 +31,12 @@ class MagOneSerializer(serializers.ModelSerializer):
 class ReviewSerializer(serializers.ModelSerializer):
     city = serializers.SerializerMethodField()
     gugoon = serializers.SerializerMethodField()
-    profileimage = serializers.SerializerMethodField()
+    profileimage_url = serializers.SerializerMethodField()
     nickname = serializers.SerializerMethodField()
 
     class Meta:
         model=Review
-        fields= ['id', 'user_id' , 'region_id' ,'content', 'score' , 'image', 'city' ,'gugoon' , 'profileimage', 'nickname', 'created_at']
+        fields= ['id', 'user_id' , 'region_id' ,'content', 'score' , 'image', 'city' ,'gugoon' , 'profileimage_url', 'nickname', 'created_at']
     
     def city(self, obj):
         return obj.city()
@@ -45,8 +45,8 @@ class ReviewSerializer(serializers.ModelSerializer):
 
     region_id = serializers.PrimaryKeyRelatedField(queryset=Region.objects.all())
 
-    def get_profileimage(self, obj):
-        return obj.user_id.profileimage if obj.user_id.profileimage else None
+    def get_profileimage_url(self, obj):
+        return obj.user_id.profileimage_url if obj.user_id.profileimage_url else None
 
     def get_nickname(self, obj):
         return obj.user_id.nickname if obj.user_id.nickname else None
