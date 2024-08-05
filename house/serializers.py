@@ -112,7 +112,7 @@ class ReportSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Report
-        fields = ['user_id', 'region_id', 'plan1', 'plan2', 'plan3', 'city', 'gugoon']
+        fields = ['user_id', 'region_id', 'plan1', 'plan2', 'plan3', 'city', 'gugoon', 'created_at']
 
     def city(self, obj):
         return obj.city()
