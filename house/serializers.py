@@ -94,12 +94,28 @@ class FilterSerializer(serializers.Serializer):
     )
 
 class CenterReviewSerializer(serializers.ModelSerializer):
+    name = serializers.SerializerMethodField()
+    region_id = serializers.SerializerMethodField()
+    city = serializers.SerializerMethodField()
+    gugoon = serializers.SerializerMethodField()
     profileimage_url = serializers.SerializerMethodField()
     nickname = serializers.SerializerMethodField()
 
     class Meta:
         model = CenterReview
-        fields = ['center_id', 'user_id', 'content','created_at','profileimage_url','nickname','score', 'thumbnail']
+        fields = ['id', 'center_id', 'name', 'user_id','region_id', 'city', 'gugoon', 'content','created_at','profileimage_url','nickname','score', 'thumbnail']
+
+    def get_name(self, obj):
+        return obj.center_id.name
+    
+    def get_region_id(self, obj):
+        return obj.center_id.region_id.id
+
+    def get_city(self, obj):
+        return obj.center_id.region_id.city
+
+    def get_gugoon(self, obj):
+        return obj.center_id.region_id.gugoon
 
     def get_profileimage_url(self, obj):
         return obj.user_id.profileimage_url if obj.user_id.profileimage_url else None
