@@ -106,13 +106,18 @@ class Regionreview(APIView): # 사용자가 쓰고 , 삭제하고, 리스트로 
 
         region = get_object_or_404(Region, city_code=id)  # 지역 정보 불러오기
 
-        data = request.data.copy() # request를 복사해서 Review Serializer 에 추가되어야하는 body 필드를 추가한다.
-        data['user_id'] = user.id
-        data['region_id'] = region.id 
+        data = { # 'id', 'user_id' , 'region_id' ,'city', 'gugoon', 'content', 'score' , 'image', 'city' ,'gugoon' , 'profileimage_url', 'nickname', 'created_at'
+            'user_id': user.id,
+            'region_id': region.id,
+            'content': request.data.get('content'),
+            'score': request.data.get('score'),
+            'image': request.data.get('image')
+        }
 
         serializer = ReviewSerializer(data=data)
         if serializer.is_valid():
             serializer.save()
+            print('hrllo')
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
