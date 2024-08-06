@@ -39,7 +39,14 @@ class Home(APIView):
         region_list.append(get_object_or_404(Region, id=region_id_list[2]))
         
         magazine_list = []
-        for region_id in region_id_list:
+        # for region_id in region_id_list:
+        #     magazines = Magazine.objects.filter(region_id=region_id)
+        #     if magazines.exists():
+        #         magazine = random.choice(magazines)
+        #         magazine_list.append(magazine)
+        
+        region_id_list_example = [20, 34, 232]
+        for region_id in region_id_list_example:
             magazines = Magazine.objects.filter(region_id=region_id)
             if magazines.exists():
                 magazine = random.choice(magazines)
