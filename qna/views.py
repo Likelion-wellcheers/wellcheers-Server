@@ -91,6 +91,7 @@ class QuestionDetail(APIView):
             qna.finish = 1
         else: 
             qna.finish = 0
+        qna.save()
         serializer = QuestionSerializer(qna)
 
         return Response(data=serializer.data, status=status.HTTP_200_OK)
